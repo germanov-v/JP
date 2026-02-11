@@ -1,11 +1,11 @@
 package ru.blog.model.posts;
 
-public class ListPostRequest {
-    public String search;
+public final class ListPostRequest {
+    private String search;
 
-    public Integer pageNumber;
+    private Integer pageNumber;
 
-    public Integer pageSize;
+    private Integer pageSize;
 
     public String getSearch() {
         return search;

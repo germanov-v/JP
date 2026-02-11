@@ -2,15 +2,15 @@ package ru.blog.model.posts;
 
 import java.util.List;
 
-public class ListPostResponse {
+public final class ListPostResponse {
 
-   public List<PostResponse> posts;
+   private List<PostResponse> posts;
 
-   public boolean hasPrev;
+    private boolean hasPrev;
 
-   public boolean hasNext;
+    private boolean hasNext;
 
-   public int lastPage;
+    private int lastPage;
 
 
     public List<PostResponse> getPosts() {

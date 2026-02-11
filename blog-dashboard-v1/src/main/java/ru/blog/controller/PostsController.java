@@ -1,14 +1,8 @@
 package ru.blog.controller;
 
 
-import jdk.jshell.spi.ExecutionControl;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import ru.blog.model.posts.ListPostRequest;
-import ru.blog.model.posts.ListPostResponse;
-import ru.blog.model.response.PaginationResponse;
+import org.springframework.web.bind.annotation.*;
+import ru.blog.model.posts.*;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -23,4 +17,30 @@ public class PostsController {
         throw new UnsupportedOperationException("Not supported yet.");
        // return new Object();
     }
+
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public PostResponse Get(@PathVariable(name="id") Long id) {
+
+        throw new UnsupportedOperationException("Not supported yet.");
+        // return new Object();
+    }
+
+    @PostMapping
+    @ResponseBody
+    public PostResponse Add(CreatePostRequest request) {
+
+        throw new UnsupportedOperationException("Not supported yet.");
+        // return new Object();
+    }
+
+    @PutMapping
+    @ResponseBody
+    public PostResponse Add(EditRequestPostRequest request) {
+
+        throw new UnsupportedOperationException("Not supported yet.");
+        // return new Object();
+    }
+
 }

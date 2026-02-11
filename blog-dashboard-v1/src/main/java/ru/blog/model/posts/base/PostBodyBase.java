@@ -2,11 +2,11 @@ package ru.blog.model.posts.base;
 
 public abstract class PostBodyBase {
 
-    public  String title;
+    protected   String title;
 
-    public String text;
+    protected String text;
 
-    public String[] tag;
+    protected String[] tag;
 
     public String getTitle() {
         return title;

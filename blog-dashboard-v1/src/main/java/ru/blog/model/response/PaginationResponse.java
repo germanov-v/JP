@@ -1,4 +1,4 @@
-package ru.blog.model.responses;
+package ru.blog.model.response;
 
 public record PaginationResponse<TResult> (
 

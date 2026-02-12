@@ -94,7 +94,7 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
      * @return
      */
     @Override
-    @Transactional
+    //@Transactional
     public Long save(CreatePostRequest request) {
 
         // language=sql

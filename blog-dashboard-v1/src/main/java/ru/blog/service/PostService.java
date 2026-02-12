@@ -2,6 +2,7 @@ package ru.blog.service;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.blog.model.PostMapper;
 import ru.blog.model.posts.request.CreatePostRequest;
 import ru.blog.model.posts.response.PostResponse;
@@ -18,6 +19,7 @@ public class PostService {
     }
 
 
+    @Transactional
     public PostResponse save(CreatePostRequest request) {
         var id = postRepository.save(request);
         var post = postRepository.findById(id);

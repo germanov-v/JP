@@ -1,4 +1,4 @@
-CREATE SCHEMA posts;
+CREATE SCHEMA if not exists posts;
 
 CREATE TABLE if not exists  posts.posts
 (

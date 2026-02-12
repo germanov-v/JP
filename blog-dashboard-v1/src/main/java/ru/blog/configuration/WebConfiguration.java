@@ -11,3 +11,4 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @PropertySource("classpath:application.dev.properties")
 public class WebConfiguration {
 }
+

@@ -11,6 +11,8 @@ import ru.blog.repository.base.PostRepository;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+
+
     private final PostMapper postMapper;
 
     public PostService(PostRepository postRepository, PostMapper postMapper) {

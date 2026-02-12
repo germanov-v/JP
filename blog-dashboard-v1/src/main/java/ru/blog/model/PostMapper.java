@@ -6,9 +6,9 @@ import ru.blog.model.posts.db.Post;
 import ru.blog.model.posts.response.PostResponse;
 
 
-@Mapper(componentModel = "sping")
+@Mapper(componentModel = "spring")
 public interface PostMapper {
 
-    @Mapping(source = "mainText", target = "text")
+    @Mapping(source = "mainContent", target = "text")
     PostResponse toResponse(Post post);
 }

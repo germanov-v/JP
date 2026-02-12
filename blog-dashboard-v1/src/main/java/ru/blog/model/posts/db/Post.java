@@ -6,7 +6,7 @@ public class Post {
 
     private String mainContent;
 
-    private String imageText;
+    private String image;
 
     private int likesCount;
 
@@ -40,11 +40,11 @@ public class Post {
     }
 
     public String getImageText() {
-        return imageText;
+        return image;
     }
 
-    public void setImageText(String imageText) {
-        this.imageText = imageText;
+    public void setImage(String imageText) {
+        this.image = imageText;
     }
 
     public int getLikesCount() {

@@ -1,0 +1,27 @@
+package ru.blog.service;
+
+
+import org.springframework.stereotype.Service;
+import ru.blog.model.PostMapper;
+import ru.blog.model.posts.request.CreatePostRequest;
+import ru.blog.model.posts.response.PostResponse;
+import ru.blog.repository.base.PostRepository;
+
+@Service
+public class PostService {
+    private final PostRepository postRepository;
+    private final PostMapper postMapper;
+
+    public PostService(PostRepository postRepository, PostMapper postMapper) {
+        this.postRepository = postRepository;
+        this.postMapper = postMapper;
+    }
+
+
+    public PostResponse save(CreatePostRequest request) {
+        var id = postRepository.save(request);
+        var post = postRepository.findById(id);
+
+        return postMapper.toResponse(post);
+    }
+}

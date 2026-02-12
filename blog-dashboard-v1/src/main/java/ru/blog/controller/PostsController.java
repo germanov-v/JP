@@ -2,7 +2,11 @@ package ru.blog.controller;
 
 
 import org.springframework.web.bind.annotation.*;
-import ru.blog.model.posts.*;
+import ru.blog.model.posts.request.CreatePostRequest;
+import ru.blog.model.posts.request.EditRequestPostRequest;
+import ru.blog.model.posts.request.ListPostRequest;
+import ru.blog.model.posts.response.ListPostResponse;
+import ru.blog.model.posts.response.PostResponse;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -37,7 +41,7 @@ public class PostsController {
 
     @PutMapping
     @ResponseBody
-    public PostResponse Add(EditRequestPostRequest request) {
+    public PostResponse Update(EditRequestPostRequest request) {
 
         throw new UnsupportedOperationException("Not supported yet.");
         // return new Object();

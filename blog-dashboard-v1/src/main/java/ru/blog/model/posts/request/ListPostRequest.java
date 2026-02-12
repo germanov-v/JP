@@ -1,4 +1,4 @@
-package ru.blog.model.posts;
+package ru.blog.model.posts.request;
 
 public final class ListPostRequest {
     private String search;

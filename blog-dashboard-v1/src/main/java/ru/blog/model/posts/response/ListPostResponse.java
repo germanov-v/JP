@@ -1,4 +1,4 @@
-package ru.blog.model.posts;
+package ru.blog.model.posts.response;
 
 import java.util.List;
 

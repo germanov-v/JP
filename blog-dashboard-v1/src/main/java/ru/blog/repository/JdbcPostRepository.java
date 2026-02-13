@@ -114,7 +114,7 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
      */
     @Override
     //@Transactional
-    public Long save(CreatePostRequest request) {
+    public Long create(CreatePostRequest request) {
         log.info("Transcat active: {}", TransactionSynchronizationManager.isActualTransactionActive());
         // language=sql
         final var sqlPosts = """

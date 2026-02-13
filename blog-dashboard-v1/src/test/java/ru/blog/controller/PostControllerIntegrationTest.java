@@ -116,7 +116,7 @@ public class PostControllerIntegrationTest {
 
         var postRequest = createPostRequest();
 
-        var post = postService.save(postRequest);
+        var post = postService.create(postRequest);
 
 
         mockMvc.perform(get("/api/posts/"+post.getId())
@@ -153,11 +153,11 @@ public class PostControllerIntegrationTest {
     }
 
     private void savePostRequest(CreatePostRequest  createPostRequest) {
-         postService.save(createPostRequest);
+         postService.create(createPostRequest);
     }
 
     private void createAndSavePost() {
-        postService.save(createPostRequest());
+        postService.create(createPostRequest());
     }
 
 }

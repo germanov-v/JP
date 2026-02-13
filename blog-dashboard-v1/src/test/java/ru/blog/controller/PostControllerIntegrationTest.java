@@ -20,6 +20,7 @@ import org.springframework.web.context.WebApplicationContext;
 import ru.blog.configuration.DataSourceConfiguration;
 import ru.blog.configuration.RestConfiguration;
 import ru.blog.configuration.WebConfiguration;
+import ru.blog.model.posts.request.CreateCommentRequest;
 import ru.blog.model.posts.request.CreatePostRequest;
 import ru.blog.model.posts.request.EditRequestPostRequest;
 import ru.blog.repository.base.PostRepository;
@@ -27,6 +28,7 @@ import ru.blog.service.PostService;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -211,22 +213,66 @@ public class PostControllerIntegrationTest {
         var file = new MockMultipartFile("file", "a.png", "image/png", bytes);
 
 
-
-      mockMvc.perform(
-                  multipart("/api/posts/{id}/image", post.getId()).file(file)
-                 )
+        mockMvc.perform(
+                        multipart("/api/posts/{id}/image", post.getId()).file(file)
+                )
                 .andExpect(status().isOk());
-      var fileSaved =  Paths.get(PostService.UPLOAD_DIRECTORY + file.getOriginalFilename());
-      assert(Files.exists(fileSaved));
+        var fileSaved = Paths.get(PostService.UPLOAD_DIRECTORY + file.getOriginalFilename());
+        assert (Files.exists(fileSaved));
 
         mockMvc.perform(
                         get("/api/posts/{id}/image", post.getId())
                 )
                 .andExpect(status().isOk());
 
-      Files.delete(fileSaved);
+        Files.delete(fileSaved);
     }
 
+
+    @Test
+    void getCommentList_returnJson() throws Exception {
+
+       var result = createAndSavePostComment(3);
+
+
+        mockMvc.perform(get("/api/posts/{id}/comments",result.postId)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").isNumber())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3))
+        ;
+    }
+
+
+    @Test
+    void addComment_returnJson() throws Exception {
+        var postId = createAndSavePost();
+        var comment = createCommentRequest(postId);
+
+        mockMvc.perform(post("/api/posts/{id}/comments",comment.getPostId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(comment)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+        ;
+    }
+
+    @Test
+    void getComment_returnJson() throws Exception {
+
+        var comment = createAndSavePostComment(1);
+
+        mockMvc.perform(get("/api/posts/{id}/comments/{commentId}",
+                        comment.postId,
+                        comment.commentIds.getFirst()
+                        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(comment)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+        ;
+    }
 
     private CreatePostRequest createPostRequest() {
         var postRequest = new CreatePostRequest();
@@ -236,12 +282,34 @@ public class PostControllerIntegrationTest {
         return postRequest;
     }
 
+    private CreateCommentRequest createCommentRequest(Long postId) {
+        var request = new CreateCommentRequest();
+        request.setPostId(postId);
+        request.setText(mockText);
+        return request;
+    }
+
     private void savePostRequest(CreatePostRequest createPostRequest) {
         postService.create(createPostRequest);
     }
 
-    private void createAndSavePost() {
-        postService.create(createPostRequest());
+    private Long createAndSavePost() {
+       return   postService.create(createPostRequest()).getId();
+    }
+
+
+    record CommentPostResult(Long postId, List<Long> commentIds) {
+    }
+
+    private CommentPostResult createAndSavePostComment(int count) {
+        var post = postService.create(createPostRequest());
+        List<Long> commentIds = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            var comment = createCommentRequest(post.getId());
+            var commentResult = postService.createComment(post.getId(), comment);
+            commentIds.add(commentResult.getId());
+        }
+        return new CommentPostResult(post.getId(), commentIds);
     }
 
 }

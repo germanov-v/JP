@@ -85,6 +85,28 @@ public class PostsController {
                 .body(resource);
     }
 
+
+    @GetMapping("/{id}/comments")
+    @ResponseBody
+    public List<CommentResponse> GetComments(@PathVariable(name = "id") Long id) {
+        return postService.getComments(id);
+    }
+
+    @PostMapping("/{id}/comments")
+    @ResponseBody
+    public CommentResponse SetComment(@PathVariable(name = "id") Long id,
+                                      @RequestBody CreateCommentRequest request) {
+        return postService.createComment(id,request);
+    }
+
+
+    @GetMapping("/{id}/comments/{commentId}")
+    @ResponseBody
+    public CommentResponse GetComment(@PathVariable(name = "id") Long id,
+                                      @PathVariable(name = "commentId") Long commentId) {
+        return postService.getComment(id,commentId);
+    }
+
      // NOT TESTED
     // ================================
 
@@ -94,25 +116,6 @@ public class PostsController {
 
 
 
-    @GetMapping("/{id}/comments")
-    @ResponseBody
-    public List<CommentResponse> GetComments(@PathVariable(name = "id") Long id) {
-        return postService.getComments(id);
-    }
-
-    @GetMapping("/{id}/comments/{commentId}")
-    @ResponseBody
-    public CommentResponse GetComment(@PathVariable(name = "id") Long id,
-                                            @PathVariable(name = "commentId") Long commentId) {
-        return postService.getComment(id,commentId);
-    }
-
-    @PostMapping("/{id}/comments")
-    @ResponseBody
-    public CommentResponse SetComment(@PathVariable(name = "id") Long id,
-                                      @RequestBody CreateCommentRequest request) {
-        return postService.createComment(id,request);
-    }
 
     @PutMapping("/{id}/comments/{commentId}")
     @ResponseBody

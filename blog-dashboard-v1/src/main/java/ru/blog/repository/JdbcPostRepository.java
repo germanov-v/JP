@@ -11,9 +11,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import ru.blog.model.posts.db.Post;
-import ru.blog.model.posts.request.CreatePostRequest;
-import ru.blog.model.posts.request.EditRequestPostRequest;
-import ru.blog.model.posts.request.ListPostRequest;
+import ru.blog.model.posts.request.*;
+import ru.blog.model.posts.response.CommentResponse;
 import ru.blog.model.posts.response.PostResponse;
 import ru.blog.repository.base.PostRepository;
 
@@ -29,14 +28,14 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
 
     //    @Autowired
 //    private NamedParameterJdbcTemplate jdbcTemplate;
-       private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 //    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private static final Logger log = LoggerFactory.getLogger(JdbcPostRepository.class);
 
     public JdbcPostRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-     //   this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        //   this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
@@ -109,6 +108,7 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
 
     /**
      * m.b. unnest ?
+     *
      * @param request
      * @return
      */
@@ -173,14 +173,14 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
             final List<Long> tagIds = jdbcTemplate
                     .query(sqlSelectTagIds,
                             new MapSqlParameterSource().addValue("tag_value", tags)
-                               //     .addValue("tag_value", request.getTag())
+                            //     .addValue("tag_value", request.getTag())
                             ,
                             (rs, i) -> rs.getLong("id")
                     );
 
             if (tagIds.isEmpty()) {
-                 throw new UnsupportedOperationException();
-                 // return postId;
+                throw new UnsupportedOperationException();
+                // return postId;
             }
             // language=sql
             final String sqlInsertPostTags = """
@@ -190,8 +190,8 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
                     """;
 
             final var paramBatchTags = tagIds.stream()
-                            .map(p -> new MapSqlParameterSource().addValue("post_id", postId)
-                                    .addValue("tag_id", p))
+                    .map(p -> new MapSqlParameterSource().addValue("post_id", postId)
+                            .addValue("tag_id", p))
                     .toArray(MapSqlParameterSource[]::new);
 
             jdbcTemplate.batchUpdate(sqlInsertPostTags, paramBatchTags);
@@ -199,10 +199,6 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
         return postId;
     }
 
-    @Override
-    public void update(EditRequestPostRequest request) {
-
-    }
 
     @Override
     public Post findById(Long id) {
@@ -227,26 +223,172 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
 //                       p.likes_count
 //               """;
 
-               final var sql = """
-                      SELECT 
-                       p.id,
-                       title,
-                       main_text,
-                       image,
-                       likes_count,
-                       (
-                         SELECT COUNT(*) FROM posts.comments pc WHERE pc.post_id=p.id
-                       )  comment_count
-                   FROM posts.posts p
-                   LEFT JOIN posts.comments c
-                     ON c.post_id = p.id
-                   WHERE p.id=:id
-               """;
+        final var sql = """
+                       SELECT 
+                        p.id,
+                        title,
+                        main_text,
+                        image,
+                        likes_count,
+                        (
+                          SELECT COUNT(*) FROM posts.comments pc WHERE pc.post_id=p.id
+                        )  comment_count
+                    FROM posts.posts p
+                    LEFT JOIN posts.comments c
+                      ON c.post_id = p.id
+                    WHERE p.id=:id
+                """;
 
         return jdbcTemplate.queryForObject(sql,
                 new MapSqlParameterSource().addValue("id", id),
                 this::GetResponse);
 
+    }
+
+
+    @Override
+    public Integer addLike(Long postId) {
+        final String sql = """
+                      UPDATE posts.posts
+                      SET likes_count=likes_count+1
+                      WHERE  id=:id
+                      RETURNING likes_count
+                """;
+
+        return jdbcTemplate.queryForObject(sql,
+                new MapSqlParameterSource().addValue("id", postId), Integer.class);
+    }
+
+    @Override
+    public void update(EditRequestPostRequest request) {
+        final String sql = """
+                      UPDATE posts.posts
+                        SET
+                            title=:title,
+                            main_text=:main_text
+                        WHERE  id=:id
+                """;
+
+        jdbcTemplate.update(sql,
+                new MapSqlParameterSource().addValue("id", request.getId())
+                        .addValue("title", request.getTitle())
+                        .addValue("main_text", request.getText()));
+    }
+
+    @Override
+    public void delete(Long id) {
+        final String sql = """
+                      DELETE FROM posts.posts
+                      
+                        WHERE  id=:id
+                """;
+
+        jdbcTemplate.update(sql,
+                new MapSqlParameterSource()
+                        .addValue("main_text", id));
+    }
+
+
+    @Override
+    public void updateFile(Long postId, String fileName) {
+        final String sql = """
+                      UPDATE posts.posts(image)
+                      SET image=:image
+                      AND id=:post_id
+                """;
+
+        jdbcTemplate.update(sql, new MapSqlParameterSource().addValue("image", fileName)
+                .addValue("post_id", postId));
+    }
+
+    @Override
+    public String getFileName(Long postId) {
+        final String sql = """
+                      SELECT image FROM posts.posts
+                      WHERE id=:post_id
+                """;
+
+        return jdbcTemplate.queryForObject(sql, new MapSqlParameterSource()
+                .addValue("post_id", postId), String.class);
+    }
+
+    @Override
+    public List<CommentResponse> getComments(Long postId) {
+        final String sql = """
+                      SELECT 
+                        id,
+                        post_id,
+                        text 
+                      FROM posts.comments
+                      WHERE post_id=:post_id
+                """;
+
+        return jdbcTemplate.query(sql,
+                new MapSqlParameterSource().addValue("post_id", postId),
+                this::GetCommentResponse);
+    }
+
+    @Override
+    public CommentResponse getComment(Long postId, Long commentId) {
+        final String sql = """
+                      SELECT 
+                        id,
+                        post_id,
+                        text 
+                      FROM posts.comments
+                      WHERE id=:id AND post_id=:post_id
+                """;
+
+        return jdbcTemplate.queryForObject(sql,
+                new MapSqlParameterSource().addValue("post_id", postId)
+                        .addValue("id", commentId),
+                this::GetCommentResponse);
+    }
+
+    @Override
+    public Long createComment(CreateCommentRequest request) {
+        final String sql = """
+                      INSERT INTO posts.comments(post_id, text)
+                        VALUES (:post_id, :text) 
+                      RETURNING id;
+                """;
+
+        return jdbcTemplate.queryForObject(sql,
+                new MapSqlParameterSource().addValue("post_id", request.getPostId())
+                        .addValue("text", request.getText()),
+                Long.class);
+    }
+
+
+    @Override
+    public void updateComment(EditCommentRequest request) {
+        final String sql = """
+                      UPDATE posts.comments
+                      SET text=:text
+                      WHERE 
+                          post_id=:post_id
+                          AND id=:id
+                """;
+
+        jdbcTemplate.update(sql,
+                new MapSqlParameterSource().addValue("post_id", request.getPostId())
+                        .addValue("id", request.getId())
+                        .addValue("text", request.getText()));
+    }
+
+    @Override
+    public void delete(Long postId, Long commentId) {
+        final String sql = """
+                     DELETE FROM posts.comments
+                
+                      WHERE 
+                          post_id=:post_id
+                          AND id=:id
+                """;
+
+        jdbcTemplate.update(sql,
+                new MapSqlParameterSource().addValue("post_id", postId)
+                        .addValue("id", commentId));
     }
 
     private Post GetResponse(ResultSet resultSet, int rowNumber) throws SQLException {
@@ -258,6 +400,14 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
         post.setLikesCount(resultSet.getInt("likes_count"));
         post.setCommentsCount(resultSet.getInt("comment_count"));
         return post;
+    }
+
+    private CommentResponse GetCommentResponse(ResultSet st, int rowNumber) throws SQLException {
+        var result = new CommentResponse();
+        result.setId(st.getLong("id"));
+        result.setText(st.getString("text"));
+        result.setPostId(st.getLong("post_id"));
+        return result;
     }
 
     @Transactional
@@ -327,5 +477,6 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
         }
         return postId;
     }
+
 
 }

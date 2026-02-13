@@ -95,6 +95,14 @@ public class PostControllerIntegrationTest {
                 //   new String[]{mockTag1, mockTag2, mockTag3})
                 List.of(mockTitle))
         );
+
+        jdbcTemplate.update("""
+                DELETE FROM posts.comments
+                                   WHERE text IN (:text)
+               """, new MapSqlParameterSource().addValue("text",
+                //   new String[]{mockTag1, mockTag2, mockTag3})
+                List.of(mockTag1, mockTag2))
+        );
     }
 
     @Test

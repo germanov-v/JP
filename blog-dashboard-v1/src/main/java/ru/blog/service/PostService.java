@@ -1,6 +1,7 @@
 package ru.blog.service;
 
 
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,9 @@ import ru.blog.model.posts.response.ListPostResponse;
 import ru.blog.model.posts.response.PostResponse;
 import ru.blog.repository.base.PostRepository;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
 
+public static final String UPLOAD_DIRECTORY = "uploads/";
 
     private final PostMapper postMapper;
 
@@ -77,36 +82,60 @@ public class PostService {
         return postRepository.addLike(postId);
     }
 
-    public void UploadImage(Long id, MultipartFile file) {
-        postRepository.delete(id);
+    public void UploadImage(Long postId, MultipartFile file) {
+        try{
+            var uploadDir = Paths.get(UPLOAD_DIRECTORY);
+
+            if(!Files.exists(uploadDir)){
+                Files.createDirectories(uploadDir);
+            }
+
+            var filePath = uploadDir + file.getOriginalFilename();
+            file.transferTo(Paths.get(filePath));
+
+            postRepository.updateFile(postId, file.getOriginalFilename());
+
+        }catch (IOException ex){
+            throw new RuntimeException(ex);
+        }
+
+
     }
 
-    public Resource DownloadImage(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-        //return  postRepository.delete(id);
+    public Resource DownloadImage(Long postId) {
+       try{
+         var fileName = postRepository.getFileName(postId);
+         var filePath = Paths.get(UPLOAD_DIRECTORY + fileName);
+         var content = Files.readAllBytes(filePath);
+         return new ByteArrayResource(content);
+       }catch(IOException ex){
+           throw new RuntimeException(ex);
+       }
     }
 
-    public List<CommentResponse> getComments(long postId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<CommentResponse> getComments(Long postId) {
+        return postRepository.getComments(postId);
     }
 
     public CommentResponse getComment(long postId, long commentId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return postRepository.getComment(postId, commentId);
     }
 
 
     public CommentResponse createComment(long postId, CreateCommentRequest request) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        var commentId = postRepository.createComment(request);
+        return postRepository.getComment(postId, commentId);
     }
 
 
     public CommentResponse updateComment(long postId, long commentId, EditCommentRequest request) {
-        throw new UnsupportedOperationException("Not supported yet.");
+         postRepository.updateComment(request);
+         return postRepository.getComment(postId, commentId);
     }
 
 
     public void deleteComment(long postId, long commentId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+         postRepository.delete(postId, commentId);
     }
 
 }

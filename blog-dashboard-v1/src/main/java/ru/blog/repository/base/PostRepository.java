@@ -1,9 +1,8 @@
 package ru.blog.repository.base;
 
 import ru.blog.model.posts.db.Post;
-import ru.blog.model.posts.request.CreatePostRequest;
-import ru.blog.model.posts.request.EditRequestPostRequest;
-import ru.blog.model.posts.request.ListPostRequest;
+import ru.blog.model.posts.request.*;
+import ru.blog.model.posts.response.CommentResponse;
 
 import java.lang.management.LockInfo;
 import java.util.List;
@@ -21,6 +20,22 @@ public interface PostRepository {
 
     Post findById(Long id);
 
-    int addLike(Long postId);
+    Integer addLike(Long postId);
+
+
+    void updateFile(Long postId, String fileName);
+
+    String getFileName(Long postId);
+
+    List<CommentResponse> getComments(Long postId);
+
+    CommentResponse getComment(Long postId, Long commentId);
+
+    Long createComment(CreateCommentRequest request);
+
+    void updateComment(EditCommentRequest request);
+
+
+    void delete(Long postId, Long commentId);
 
 }

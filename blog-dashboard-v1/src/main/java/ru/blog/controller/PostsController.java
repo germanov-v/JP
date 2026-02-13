@@ -42,7 +42,8 @@ public class PostsController {
     @ResponseBody
     public PostResponse Add(@RequestBody CreatePostRequest request) {
 
-        return postService.save(request);
+       var result = postService.save(request);
+       return result;
           // return new Object();
     }
 

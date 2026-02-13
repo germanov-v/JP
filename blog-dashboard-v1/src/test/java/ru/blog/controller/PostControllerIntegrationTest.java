@@ -19,6 +19,7 @@ import ru.blog.model.posts.request.CreatePostRequest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringJUnitConfig(classes = {
         DataSourceConfiguration.class,
@@ -56,7 +57,9 @@ public class PostControllerIntegrationTest {
         mockMvc.perform(post("/api/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(postRequest)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+        ;
     }
 
 }

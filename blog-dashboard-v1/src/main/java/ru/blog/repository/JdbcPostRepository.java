@@ -279,13 +279,12 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
     public void delete(Long id) {
         final String sql = """
                       DELETE FROM posts.posts
-                      
-                        WHERE  id=:id
+                       WHERE  id=:id
                 """;
 
         jdbcTemplate.update(sql,
                 new MapSqlParameterSource()
-                        .addValue("main_text", id));
+                        .addValue("id", id));
     }
 
 

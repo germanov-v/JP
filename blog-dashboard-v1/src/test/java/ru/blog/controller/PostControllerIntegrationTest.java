@@ -20,13 +20,13 @@ import ru.blog.configuration.DataSourceConfiguration;
 import ru.blog.configuration.RestConfiguration;
 import ru.blog.configuration.WebConfiguration;
 import ru.blog.model.posts.request.CreatePostRequest;
+import ru.blog.model.posts.request.EditRequestPostRequest;
 import ru.blog.repository.base.PostRepository;
 import ru.blog.service.PostService;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -63,43 +63,43 @@ public class PostControllerIntegrationTest {
     final private String mockTag3 = "test3";
 
     @BeforeEach
-    void setupBeforeEachTest(){
-         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    void setupBeforeEachTest() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @AfterEach
-    void cleanTest(){
-         // TODO: truncate tables ?
+    void cleanTest() {
+        // TODO: truncate tables ?
         jdbcTemplate.update("""
-                DELETE FROM posts.post_tags
-                  WHERE tag_id IN 
-                        (SELECT id FROM posts.tags 
-                                   WHERE tag_value IN (:tags))
-               """, new MapSqlParameterSource().addValue("tags",
+                 DELETE FROM posts.post_tags
+                   WHERE tag_id IN 
+                         (SELECT id FROM posts.tags 
+                                    WHERE tag_value IN (:tags))
+                """, new MapSqlParameterSource().addValue("tags",
                 //   new String[]{mockTag1, mockTag2, mockTag3})
                 List.of(mockTag1, mockTag2, mockTag3))
         );
 
         jdbcTemplate.update("""
-                DELETE FROM posts.tags
-                                   WHERE tag_value IN (:tags)
-               """, new MapSqlParameterSource().addValue("tags",
+                 DELETE FROM posts.tags
+                                    WHERE tag_value IN (:tags)
+                """, new MapSqlParameterSource().addValue("tags",
                 //   new String[]{mockTag1, mockTag2, mockTag3})
                 List.of(mockTag1, mockTag2, mockTag3))
         );
 
         jdbcTemplate.update("""
-                DELETE FROM posts.posts
-                                   WHERE title IN (:title)
-               """, new MapSqlParameterSource().addValue("title",
+                 DELETE FROM posts.posts
+                                    WHERE title IN (:title)
+                """, new MapSqlParameterSource().addValue("title",
                 //   new String[]{mockTag1, mockTag2, mockTag3})
-                List.of(mockTitle))
+                List.of(mockTitle, mockTag1))
         );
 
         jdbcTemplate.update("""
-                DELETE FROM posts.comments
-                                   WHERE text IN (:text)
-               """, new MapSqlParameterSource().addValue("text",
+                 DELETE FROM posts.comments
+                                    WHERE text IN (:text)
+                """, new MapSqlParameterSource().addValue("text",
                 //   new String[]{mockTag1, mockTag2, mockTag3})
                 List.of(mockTag1, mockTag2))
         );
@@ -127,8 +127,8 @@ public class PostControllerIntegrationTest {
         var post = postService.create(postRequest);
 
 
-        mockMvc.perform(get("/api/posts/"+post.getId())
-                     )
+        mockMvc.perform(get("/api/posts/" + post.getId())
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNumber())
         ;
@@ -139,12 +139,10 @@ public class PostControllerIntegrationTest {
 
         createAndSavePost();
         createAndSavePost();
-        createAndSavePost() ;
+        createAndSavePost();
 
 
-
-
-        mockMvc.perform(get("/api/posts?search="+mockTitle+"&pageNumber=1&pageSize=5")
+        mockMvc.perform(get("/api/posts?search=" + mockTitle + "&pageNumber=1&pageSize=5")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.posts.[0].id").isNumber())
@@ -152,16 +150,64 @@ public class PostControllerIntegrationTest {
         ;
     }
 
+    @Test
+    void updatePost_returnJson() throws Exception {
+        var postRequest = createPostRequest();
+
+        var post = postService.create(postRequest);
+
+        var editPostRequest = new EditRequestPostRequest();
+        editPostRequest.setId(post.getId());
+        editPostRequest.setTitle(mockTag1);
+        editPostRequest.setText(mockTag2);
+
+        mockMvc.perform(put("/api/posts/" + post.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(editPostRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+        ;
+    }
+
+    @Test
+    void deletePost_returnJson() throws Exception {
+        var postRequest = createPostRequest();
+
+        var post = postService.create(postRequest);
+
+        mockMvc.perform(delete("/api/posts/" + post.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+        ;
+    }
+
+    @Test
+    void likePost_returnJson() throws Exception {
+        var postRequest = createPostRequest();
+
+        var post = postService.create(postRequest);
+
+        var result = mockMvc.perform(post("/api/posts/" + post.getId() + "/likes")
+                        //        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        var value = Integer.parseInt(result);
+        assert (value == 1);
+    }
+
+
     private CreatePostRequest createPostRequest() {
         var postRequest = new CreatePostRequest();
-        postRequest.setTag(new String[]{mockTag1,mockTag2, mockTag3});
+        postRequest.setTag(new String[]{mockTag1, mockTag2, mockTag3});
         postRequest.setTitle(mockTitle);
         postRequest.setText(mockText);
         return postRequest;
     }
 
-    private void savePostRequest(CreatePostRequest  createPostRequest) {
-         postService.create(createPostRequest);
+    private void savePostRequest(CreatePostRequest createPostRequest) {
+        postService.create(createPostRequest);
     }
 
     private void createAndSavePost() {

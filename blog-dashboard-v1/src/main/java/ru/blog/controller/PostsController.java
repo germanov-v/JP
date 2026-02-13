@@ -50,9 +50,6 @@ public class PostsController {
         // return new Object();
     }
 
-    // ================================
-
-
     @PutMapping("/{id}")
     @ResponseBody
     public PostResponse Update(@PathVariable(name = "id") Long id, @RequestBody EditRequestPostRequest request) {
@@ -65,11 +62,23 @@ public class PostsController {
         postService.delete(id);
     }
 
+
     @PostMapping("/{id}/likes")
     @ResponseBody
     public int Like(@PathVariable(name = "id") Long id) {
         return postService.addLike(id);
     }
+
+
+
+     // NOT TESTED
+    // ================================
+
+
+
+
+
+
 
     @PostMapping("/{id}/image")
     public void UploadImage(@PathVariable(name = "id") Long id, @RequestParam("file") MultipartFile file) {

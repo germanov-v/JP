@@ -32,10 +32,7 @@ public class PostsController {
     @GetMapping("/{id}")
     @ResponseBody
     public PostResponse Get(@PathVariable(name="id") Long id) {
-
-         throw new UnsupportedOperationException("Not supported yet.");
-        // return new Object();
-
+        return postService.findById(id);
     }
 
     @PostMapping

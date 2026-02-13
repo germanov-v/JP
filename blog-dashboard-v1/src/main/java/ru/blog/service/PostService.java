@@ -28,4 +28,11 @@ public class PostService {
 
         return postMapper.toResponse(post);
     }
+
+
+    public PostResponse findById(long id) {
+
+        var post = postRepository.findById(id);
+        return postMapper.toResponse(post);
+    }
 }

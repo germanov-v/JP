@@ -23,8 +23,9 @@ public class PostsController {
     @GetMapping
     @ResponseBody
     public ListPostResponse List(ListPostRequest request) {
-
-        throw new UnsupportedOperationException("Not supported yet.");
+        return postService.findByFilter(request);
+        //return postService.findById(id);
+      // throw new UnsupportedOperationException("Not supported yet.");
        // return new Object();
     }
 

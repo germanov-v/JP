@@ -129,18 +129,18 @@ public class PostControllerIntegrationTest {
     @Test
     void getPostList_returnJson() throws Exception {
 
-        createPostRequest();
-        createPostRequest();
-        createPostRequest();
+        createAndSavePost();
+        createAndSavePost();
+        createAndSavePost() ;
 
 
 
 
-        mockMvc.perform(get("/api/posts")
+        mockMvc.perform(get("/api/posts?search="+mockTitle+"&pageNumber=1&pageSize=5")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.posts.[0].id").isNumber())
-                .andExpect(jsonPath("$.posts.[0].id").isNumber())
+                .andExpect(jsonPath("$.posts").isArray())
         ;
     }
 
@@ -150,6 +150,14 @@ public class PostControllerIntegrationTest {
         postRequest.setTitle(mockTitle);
         postRequest.setText(mockText);
         return postRequest;
+    }
+
+    private void savePostRequest(CreatePostRequest  createPostRequest) {
+         postService.save(createPostRequest);
+    }
+
+    private void createAndSavePost() {
+        postService.save(createPostRequest());
     }
 
 }

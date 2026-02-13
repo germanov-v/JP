@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface PostRepository {
 
-    List<Post> find(ListPostRequest request);
+    public record FindResult(List<Post> posts, Integer count) {}
+    FindResult find(ListPostRequest request);
 
     Long save(CreatePostRequest request);
 

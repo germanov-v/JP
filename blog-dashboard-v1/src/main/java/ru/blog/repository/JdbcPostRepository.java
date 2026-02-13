@@ -15,6 +15,7 @@ import ru.blog.model.posts.request.CreatePostRequest;
 import ru.blog.model.posts.request.EditRequestPostRequest;
 import ru.blog.model.posts.request.ListPostRequest;
 import ru.blog.model.posts.response.PostResponse;
+import ru.blog.repository.base.PostRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +40,7 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
     }
 
     @Override
-    public List<Post> find(ListPostRequest request) {
+    public FindResult find(ListPostRequest request) {
 
         var whereSql = new StringBuilder();
         var whereArgs = new MapSqlParameterSource();
@@ -81,15 +82,28 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
                    SELECT post_id, COUNT(*) count FROM posts.comments pc
                    GROUP BY post_id
                 )
-                SELECT posts.*, 
+                SELECT pe.*, 
                        COALESCE( pc.count, 0) comment_count FROM posts_entities  pe
                 LEFT JOIN count_comments pc ON pe.id=pc.post_id
                 OFFSET :offset
                 LIMIT :limit
                 """, whereSql);
 
+        // language=sql
+        final var sqlCount = String.format("""
+                  SELECT 
+                      COUNT(*) count
+                   FROM posts.posts
+                   WHERE 1=1 
+                   %s
+                """, whereSql);
 
-        return jdbcTemplate.query(sql, whereArgs, this::GetResponse);
+        var selectResult = jdbcTemplate.query(sql, whereArgs, this::GetResponse);
+        var countResult = jdbcTemplate.queryForObject(sqlCount, whereArgs, Integer.class);
+
+
+        return new FindResult(selectResult,
+                countResult);
     }
 
 

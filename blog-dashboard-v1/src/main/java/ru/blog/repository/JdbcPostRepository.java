@@ -291,9 +291,9 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
     @Override
     public void updateFile(Long postId, String fileName) {
         final String sql = """
-                      UPDATE posts.posts(image)
+                      UPDATE posts.posts
                       SET image=:image
-                      AND id=:post_id
+                      WHERE id=:post_id
                 """;
 
         jdbcTemplate.update(sql, new MapSqlParameterSource().addValue("image", fileName)

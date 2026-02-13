@@ -69,7 +69,21 @@ public class PostsController {
         return postService.addLike(id);
     }
 
+    @PostMapping("/{id}/image")
+    public void UploadImage(@PathVariable(name = "id") Long id, @RequestParam("file") MultipartFile file) {
+        postService.UploadImage(id, file);
+    }
 
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<Resource> UploadImage(@PathVariable(name = "id") Long id) {
+        var resource = postService.DownloadImage(id);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                //.contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
+    }
 
      // NOT TESTED
     // ================================
@@ -78,22 +92,6 @@ public class PostsController {
 
 
 
-
-
-    @PostMapping("/{id}/image")
-    public void UploadImage(@PathVariable(name = "id") Long id, @RequestParam("file") MultipartFile file) {
-        postService.UploadImage(id, file);
-    }
-
-    @GetMapping("/{id}/image")
-    public ResponseEntity<Resource> UploadImage(@PathVariable(name = "id") Long id) {
-       var resource = postService.DownloadImage(id);
-
-       return ResponseEntity.ok()
-               .contentType(MediaType.APPLICATION_OCTET_STREAM)
-               //.contentType(MediaType.IMAGE_JPEG)
-               .body(resource);
-    }
 
 
     @GetMapping("/{id}/comments")

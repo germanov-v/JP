@@ -90,7 +90,7 @@ public static final String UPLOAD_DIRECTORY = "uploads/";
                 Files.createDirectories(uploadDir);
             }
 
-            var filePath = uploadDir + file.getOriginalFilename();
+            var filePath = uploadDir + "/"+file.getOriginalFilename();
             file.transferTo(Paths.get(filePath));
 
             postRepository.updateFile(postId, file.getOriginalFilename());

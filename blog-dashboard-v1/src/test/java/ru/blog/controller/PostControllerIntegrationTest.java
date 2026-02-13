@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -24,6 +25,8 @@ import ru.blog.model.posts.request.EditRequestPostRequest;
 import ru.blog.repository.base.PostRepository;
 import ru.blog.service.PostService;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -170,7 +173,7 @@ public class PostControllerIntegrationTest {
     }
 
     @Test
-    void deletePost_returnJson() throws Exception {
+    void deletePost() throws Exception {
         var postRequest = createPostRequest();
 
         var post = postService.create(postRequest);
@@ -182,7 +185,7 @@ public class PostControllerIntegrationTest {
     }
 
     @Test
-    void likePost_returnJson() throws Exception {
+    void likePost() throws Exception {
         var postRequest = createPostRequest();
 
         var post = postService.create(postRequest);
@@ -195,6 +198,33 @@ public class PostControllerIntegrationTest {
 
         var value = Integer.parseInt(result);
         assert (value == 1);
+    }
+
+
+    @Test
+    void uploadImage() throws Exception {
+        var postRequest = createPostRequest();
+        var post = postService.create(postRequest);
+
+
+        var bytes = mockTag1.getBytes();
+        var file = new MockMultipartFile("file", "a.png", "image/png", bytes);
+
+
+
+      mockMvc.perform(
+                  multipart("/api/posts/{id}/image", post.getId()).file(file)
+                 )
+                .andExpect(status().isOk());
+      var fileSaved =  Paths.get(PostService.UPLOAD_DIRECTORY + file.getOriginalFilename());
+      assert(Files.exists(fileSaved));
+
+        mockMvc.perform(
+                        get("/api/posts/{id}/image", post.getId())
+                )
+                .andExpect(status().isOk());
+
+      Files.delete(fileSaved);
     }
 
 

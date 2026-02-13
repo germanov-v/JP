@@ -107,21 +107,11 @@ public class PostsController {
         return postService.getComment(id,commentId);
     }
 
-     // NOT TESTED
-    // ================================
-
-
-
-
-
-
-
-
     @PutMapping("/{id}/comments/{commentId}")
     @ResponseBody
-    public CommentResponse GetComment(@PathVariable(name = "id") Long id,
-                                      @PathVariable(name = "commentId") Long commentId,
-                                      @RequestBody EditCommentRequest request) {
+    public CommentResponse UpdateComment(@PathVariable(name = "id") Long id,
+                                         @PathVariable(name = "commentId") Long commentId,
+                                         @RequestBody EditCommentRequest request) {
         return postService.updateComment(id,commentId, request);
     }
 
@@ -131,4 +121,13 @@ public class PostsController {
                        @PathVariable(name = "commentId") Long commentId) {
         postService.deleteComment(id,commentId);
     }
+
+    // NOT TESTED
+    // ================================
+
+
+
+
+
+
 }

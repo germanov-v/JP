@@ -22,6 +22,7 @@ import ru.blog.configuration.RestConfiguration;
 import ru.blog.configuration.WebConfiguration;
 import ru.blog.model.posts.request.CreateCommentRequest;
 import ru.blog.model.posts.request.CreatePostRequest;
+import ru.blog.model.posts.request.EditCommentRequest;
 import ru.blog.model.posts.request.EditRequestPostRequest;
 import ru.blog.repository.base.PostRepository;
 import ru.blog.service.PostService;
@@ -259,18 +260,38 @@ public class PostControllerIntegrationTest {
     }
 
     @Test
-    void getComment_returnJson() throws Exception {
+    void updateComment_returnJson() throws Exception {
 
         var comment = createAndSavePostComment(1);
 
-        mockMvc.perform(get("/api/posts/{id}/comments/{commentId}",
+        var commentUpdateRequest = new EditCommentRequest();
+        commentUpdateRequest.setId(comment.commentIds.getFirst());
+        commentUpdateRequest.setText(mockTag2);
+        commentUpdateRequest.setPostId(comment.postId);
+
+        mockMvc.perform(put("/api/posts/{id}/comments/{commentId}",
                         comment.postId,
                         comment.commentIds.getFirst()
                         )
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(comment)))
+                        .content(mapper.writeValueAsString(commentUpdateRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.text").value(mockTag2))
+        ;
+    }
+
+
+    @Test
+    void deleteComment() throws Exception {
+        var comment = createAndSavePostComment(1);
+
+        mockMvc.perform(delete("/api/posts/{id}/comments/{commentId}",
+                        comment.postId,
+                        comment.commentIds.getFirst()
+                )
+                        )
+                .andExpect(status().isOk())
         ;
     }
 

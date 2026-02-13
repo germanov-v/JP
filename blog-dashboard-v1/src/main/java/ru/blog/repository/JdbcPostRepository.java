@@ -1,12 +1,15 @@
 package ru.blog.repository;
 
 import io.micrometer.common.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import ru.blog.model.posts.db.Post;
 import ru.blog.model.posts.request.CreatePostRequest;
 import ru.blog.model.posts.request.EditRequestPostRequest;
@@ -25,12 +28,14 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
 
     //    @Autowired
 //    private NamedParameterJdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+       private final NamedParameterJdbcTemplate jdbcTemplate;
+//    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public JdbcPostRepository(NamedParameterJdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    private static final Logger log = LoggerFactory.getLogger(JdbcPostRepository.class);
+
+    public JdbcPostRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+     //   this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     @Override
@@ -96,7 +101,7 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
     @Override
     //@Transactional
     public Long save(CreatePostRequest request) {
-
+        log.info("Transcat active: {}", TransactionSynchronizationManager.isActualTransactionActive());
         // language=sql
         final var sqlPosts = """
                   INSERT INTO posts.posts
@@ -142,7 +147,7 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
                             .map(p -> new MapSqlParameterSource().addValue("tag_value", p))
                             .toArray(MapSqlParameterSource[]::new);
 
-            namedParameterJdbcTemplate.batchUpdate(sqlInsertTag, paramBatch);
+            jdbcTemplate.batchUpdate(sqlInsertTag, paramBatch);
 
             final String sqlSelectTagIds = """
                        SELECT id
@@ -151,9 +156,11 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
                     """;
 
 
-            final List<Long> tagIds = namedParameterJdbcTemplate
+            final List<Long> tagIds = jdbcTemplate
                     .query(sqlSelectTagIds,
-                            new MapSqlParameterSource().addValue("tags", tags),
+                            new MapSqlParameterSource().addValue("tag_value", tags)
+                               //     .addValue("tag_value", request.getTag())
+                            ,
                             (rs, i) -> rs.getLong("id")
                     );
 
@@ -165,7 +172,7 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
             final String sqlInsertPostTags = """
                        INSERT INTO posts.post_tags(post_id, tag_id)
                        VALUES (:post_id, :tag_id)
-                       ON CONFLICT (post_id, tag_id)
+                      -- ON CONFLICT (post_id, tag_id)
                     """;
 
             final var paramBatchTags = tagIds.stream()
@@ -208,18 +215,18 @@ public class JdbcPostRepository implements ru.blog.repository.base.PostRepositor
 
                final var sql = """
                       SELECT 
-                       id,
+                       p.id,
                        title,
                        main_text,
                        image,
                        likes_count,
                        (
-                         SELECT (COUNT(*) FROM posts.comments WHERE post_id=p.id)
-                       ) comment_count
+                         SELECT COUNT(*) FROM posts.comments pc WHERE pc.post_id=p.id
+                       )  comment_count
                    FROM posts.posts p
                    LEFT JOIN posts.comments c
-                     ON p.post_id = c.id
-                   WHERE id=:id
+                     ON c.post_id = p.id
+                   WHERE p.id=:id
                """;
 
         return jdbcTemplate.queryForObject(sql,

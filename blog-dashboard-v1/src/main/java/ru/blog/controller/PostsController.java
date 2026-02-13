@@ -40,7 +40,7 @@ public class PostsController {
 
     @PostMapping
     @ResponseBody
-    public PostResponse Add(CreatePostRequest request) {
+    public PostResponse Add(@RequestBody CreatePostRequest request) {
 
         return postService.save(request);
           // return new Object();

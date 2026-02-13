@@ -8,7 +8,7 @@ CREATE TABLE if not exists  posts.posts
    title text not null,
     main_text text not null,
     image text,
-    likesCount int not null default 0
+    likes_count int not null default 0
 );
 
 

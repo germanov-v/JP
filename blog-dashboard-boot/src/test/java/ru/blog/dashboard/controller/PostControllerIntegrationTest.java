@@ -6,6 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -16,14 +18,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.blog.configuration.DataSourceConfiguration;
-import ru.blog.configuration.RestConfiguration;
-import ru.blog.configuration.WebConfiguration;
-import ru.blog.model.posts.request.CreateCommentRequest;
-import ru.blog.model.posts.request.CreatePostRequest;
-import ru.blog.model.posts.request.EditCommentRequest;
-import ru.blog.model.posts.request.EditRequestPostRequest;
-import ru.blog.service.PostService;
+import ru.blog.dashboard.model.posts.request.CreateCommentRequest;
+import ru.blog.dashboard.model.posts.request.CreatePostRequest;
+import ru.blog.dashboard.model.posts.request.EditCommentRequest;
+import ru.blog.dashboard.model.posts.request.EditRequestPostRequest;
+import ru.blog.dashboard.service.PostService;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,12 +33,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringJUnitConfig(classes = {
-        DataSourceConfiguration.class,
-        WebConfiguration.class,
-        RestConfiguration.class,
-})
-@WebAppConfiguration
+@SpringBootTest
+        //(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application.test.properties")
 public class PostControllerIntegrationTest {
 
@@ -56,6 +52,7 @@ public class PostControllerIntegrationTest {
     @Autowired
     private PostService postService;
 
+    @Autowired
     private MockMvc mockMvc;
 
 

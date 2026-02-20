@@ -28,9 +28,6 @@ public class PostController {
     @ResponseBody
     public ListPostResponse List(ListPostRequest request) {
         return postService.findByFilter(request);
-        //return postService.findById(id);
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // return new Object();
     }
 
 

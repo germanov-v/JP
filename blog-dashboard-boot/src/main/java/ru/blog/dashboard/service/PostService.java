@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
 
-    public static final String UPLOAD_DIRECTORY = "uploads/";
+   // public static final String UPLOAD_DIRECTORY = "uploads/";
 
     private final PostMapper postMapper;
 
@@ -82,36 +82,6 @@ public class PostService {
         return postRepository.addLike(postId);
     }
 
-    public void UploadImage(Long postId, MultipartFile file) {
-        try {
-            var uploadDir = Paths.get(UPLOAD_DIRECTORY);
-
-            if (!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
-            }
-
-            var filePath = uploadDir + "/" + file.getOriginalFilename();
-            file.transferTo(Paths.get(filePath));
-
-            postRepository.updateFile(postId, file.getOriginalFilename());
-
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-
-
-    }
-
-    public Resource DownloadImage(Long postId) {
-        try {
-            var fileName = postRepository.getFileName(postId);
-            var filePath = Paths.get(UPLOAD_DIRECTORY + fileName);
-            var content = Files.readAllBytes(filePath);
-            return new ByteArrayResource(content);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 
     public List<CommentResponse> getComments(Long postId) {
         return postRepository.getComments(postId);

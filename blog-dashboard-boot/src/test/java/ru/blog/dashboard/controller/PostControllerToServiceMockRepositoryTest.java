@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.blog.dashboard.model.PostMapper;
 import ru.blog.dashboard.repository.JdbcPostRepository;
 import ru.blog.dashboard.repository.base.PostRepository;
+import ru.blog.dashboard.service.FileStorageService;
 import ru.blog.dashboard.service.PostService;
 
 import static org.mockito.Mockito.*;
@@ -38,6 +39,9 @@ public class PostControllerToServiceMockRepositoryTest {
 
     @MockitoSpyBean
     private PostService postService;
+
+    @MockitoBean
+    private FileStorageService fileStorageService;
 
 
     @Test

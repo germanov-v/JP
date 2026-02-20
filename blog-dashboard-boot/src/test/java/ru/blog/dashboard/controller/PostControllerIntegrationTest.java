@@ -23,6 +23,7 @@ import ru.blog.dashboard.model.posts.request.CreateCommentRequest;
 import ru.blog.dashboard.model.posts.request.CreatePostRequest;
 import ru.blog.dashboard.model.posts.request.EditCommentRequest;
 import ru.blog.dashboard.model.posts.request.EditRequestPostRequest;
+import ru.blog.dashboard.service.FileStorageService;
 import ru.blog.dashboard.service.PostService;
 
 import java.nio.file.Files;
@@ -215,7 +216,7 @@ public class PostControllerIntegrationTest {
                         multipart("/api/posts/{id}/image", post.getId()).file(file)
                 )
                 .andExpect(status().isOk());
-        var fileSaved = Paths.get(PostService.UPLOAD_DIRECTORY + file.getOriginalFilename());
+        var fileSaved = Paths.get(FileStorageService.UPLOAD_DIRECTORY + file.getOriginalFilename());
         assert (Files.exists(fileSaved));
 
         mockMvc.perform(

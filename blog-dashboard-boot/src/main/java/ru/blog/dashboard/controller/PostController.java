@@ -10,6 +10,7 @@ import ru.blog.dashboard.model.posts.request.*;
 import ru.blog.dashboard.model.posts.response.CommentResponse;
 import ru.blog.dashboard.model.posts.response.ListPostResponse;
 import ru.blog.dashboard.model.posts.response.PostResponse;
+import ru.blog.dashboard.service.FileStorageService;
 import ru.blog.dashboard.service.PostService;
 
 import java.util.List;
@@ -20,8 +21,11 @@ import java.util.NoSuchElementException;
 public class PostController {
     private final PostService postService;
 
-    public PostController(PostService postService) {
+    private final FileStorageService fileStorageService;
+
+    public PostController(PostService postService, FileStorageService fileStorageService) {
         this.postService = postService;
+        this.fileStorageService = fileStorageService;
     }
 
     // /api/posts?search=Lalala&pageNumber=1&pageSize=5
@@ -69,13 +73,13 @@ public class PostController {
 
     @PostMapping("/{id}/image")
     public void UploadImage(@PathVariable(name = "id") Long id, @RequestParam("file") MultipartFile file) {
-        postService.UploadImage(id, file);
+        fileStorageService.UploadImage(id, file);
     }
 
 
     @GetMapping("/{id}/image")
     public ResponseEntity<Resource> UploadImage(@PathVariable(name = "id") Long id) {
-        var resource = postService.DownloadImage(id);
+        var resource = fileStorageService.DownloadImage(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

@@ -11,6 +11,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.blog.dashboard.model.posts.request.ListPostRequest;
 import ru.blog.dashboard.model.posts.response.ListPostResponse;
+import ru.blog.dashboard.service.FileStorageService;
 import ru.blog.dashboard.service.PostService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -30,6 +31,9 @@ public class PostControllerWebUnitTest {
 
     @MockitoBean(reset = MockReset.BEFORE)
     PostService postService;
+
+    @MockitoBean(reset = MockReset.BEFORE)
+    FileStorageService fileStorageService;
 
 
     @Test

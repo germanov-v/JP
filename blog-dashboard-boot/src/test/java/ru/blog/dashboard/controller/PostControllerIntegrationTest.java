@@ -292,6 +292,12 @@ public class PostControllerIntegrationTest {
         ;
     }
 
+    @Test
+    void notFoundPage404() throws Exception {
+        mockMvc.perform(get("/api/tedsafasd"))
+                .andExpect(status().isNotFound());
+    }
+
     private CreatePostRequest createPostRequest() {
         var postRequest = new CreatePostRequest();
         postRequest.setTag(new String[]{mockTag1, mockTag2, mockTag3});

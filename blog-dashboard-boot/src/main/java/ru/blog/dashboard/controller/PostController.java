@@ -13,6 +13,7 @@ import ru.blog.dashboard.model.posts.response.PostResponse;
 import ru.blog.dashboard.service.PostService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -27,6 +28,7 @@ public class PostController {
     @GetMapping
     @ResponseBody
     public ListPostResponse List(ListPostRequest request) {
+       // throw new NoSuchElementException();
         return postService.findByFilter(request);
     }
 

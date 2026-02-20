@@ -1,6 +1,7 @@
 package ru.blog.dashboard.controller;
 
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @WebMvcTest(controllers = PostController.class)
+@Tag("test")
 public class PostControllerWebUnitTest {
 
     @Autowired

@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.org.junit.platform.launcher.TagFilter.includeTags
+
 plugins {
     java
     id("org.springframework.boot") version "3.5.10"
@@ -22,6 +24,24 @@ configurations {
     }
 }
 
+tasks.register<Test>("unitTest") {
+    useJUnitPlatform{includeTags ("unit")}
+    //        excludeTags("integration")
+}
+
+tasks.register<Test>("integrationTest") {
+    useJUnitPlatform {includeTags("integration")}
+    shouldRunAfter("test")
+}
+
+//tasks.test {
+//    useJUnitPlatform {
+//        includeTags("unit")
+
+//    }
+//}
+
+
 
 repositories {
     mavenCentral()
@@ -44,6 +64,7 @@ dependencies {
     }
 }
 
+// ./gradlew test
 tasks.withType<Test> {
     useJUnitPlatform()
 

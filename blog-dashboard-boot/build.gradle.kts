@@ -14,6 +14,12 @@ java {
     }
 }
 
+// Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+configurations {
+    create("mockitoAgent")
+}
+
+
 repositories {
     mavenCentral()
 }
@@ -29,8 +35,13 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.6.3")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3") // для сборки только
 
+    // Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+    add("mockitoAgent", "org.mockito:mockito-core")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    // Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+    jvmArgs("-javaagent:${configurations["mockitoAgent"].singleFile.absolutePath}")
 }

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -26,6 +27,8 @@ public class ProblemHttpHandler {
     }
 
 
+
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail allErrors(Exception ex, HttpServletRequest request) {
         var response = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -39,5 +42,16 @@ public class ProblemHttpHandler {
         return response;
     }
 
+    // attrs request: @Valid
+    // @ExceptionHandler(MethodArgumentNotValidException.class)
+    // public ProblemDetail validation(MethodArgumentNotValidException ex, HttpServletRequest request) {}
+
+    // parameters binding
+    // @ExceptionHandler(ConstraintViolationException.class)
+    // public ProblemDetail validation(ConstraintViolationException ex, HttpServletRequest request) {}
+
+    // BadJson
+    // @ExceptionHandler(HttpMessageNotReadableException.class)
+    // public ProblemDetail validation(HttpMessageNotReadableException ex, HttpServletRequest request) {}
 
 }

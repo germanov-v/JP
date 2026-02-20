@@ -4,9 +4,9 @@ package ru.blog.dashboard.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.blog.dashboard.model.PostMapper;
 import ru.blog.dashboard.repository.JdbcPostRepository;
@@ -30,6 +30,13 @@ public class PostControllerToServiceMockRepositoryTest {
 
     @MockitoBean
     PostMapper postMapper;
+    //@Autowired
+    //private PostService postService;
+
+
+    @MockitoSpyBean
+    private PostService postService;
+
 
     @Test
     void addLike_checkCallsRepositoryOnce() throws Exception {
@@ -43,6 +50,7 @@ public class PostControllerToServiceMockRepositoryTest {
                 //.andExpect(status())
 
        verify(postRepository, times(1)).addLike(1L);
+       verify(postService, times(1)).addLike(1L);
     }
 
 }

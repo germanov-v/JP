@@ -16,7 +16,10 @@ java {
 
 // Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
 configurations {
-    create("mockitoAgent")
+    create("mockitoAgent") {
+        isCanBeResolved = true
+        isCanBeConsumed = false
+    }
 }
 
 
@@ -36,7 +39,9 @@ dependencies {
     annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3") // для сборки только
 
     // Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
-    add("mockitoAgent", "org.mockito:mockito-core")
+    add("mockitoAgent", "org.mockito:mockito-core") {
+        isTransitive = false
+    }
 }
 
 tasks.withType<Test> {

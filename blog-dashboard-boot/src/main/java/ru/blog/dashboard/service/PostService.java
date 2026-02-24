@@ -11,6 +11,7 @@ import ru.blog.dashboard.model.posts.request.*;
 import ru.blog.dashboard.model.posts.response.CommentResponse;
 import ru.blog.dashboard.model.posts.response.ListPostResponse;
 import ru.blog.dashboard.model.posts.response.PostResponse;
+import ru.blog.dashboard.repository.base.CommentRepository;
 import ru.blog.dashboard.repository.base.PostRepository;
 
 import java.io.IOException;
@@ -23,12 +24,16 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
 
+
+    private final CommentRepository commentRepository;
+
    // public static final String UPLOAD_DIRECTORY = "uploads/";
 
     private final PostMapper postMapper;
 
-    public PostService(PostRepository postRepository, PostMapper postMapper) {
+    public PostService(PostRepository postRepository, CommentRepository commentRepository, PostMapper postMapper) {
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
         this.postMapper = postMapper;
     }
 
@@ -84,28 +89,28 @@ public class PostService {
 
 
     public List<CommentResponse> getComments(Long postId) {
-        return postRepository.getComments(postId);
+        return commentRepository.getComments(postId);
     }
 
     public CommentResponse getComment(long postId, long commentId) {
-        return postRepository.getComment(postId, commentId);
+        return commentRepository.getComment(postId, commentId);
     }
 
 
     public CommentResponse createComment(long postId, CreateCommentRequest request) {
-        var commentId = postRepository.createComment(request);
-        return postRepository.getComment(postId, commentId);
+        var commentId = commentRepository.createComment(request);
+        return commentRepository.getComment(postId, commentId);
     }
 
 
     public CommentResponse updateComment(long postId, long commentId, EditCommentRequest request) {
-        postRepository.updateComment(request);
-        return postRepository.getComment(postId, commentId);
+        commentRepository.updateComment(request);
+        return commentRepository.getComment(postId, commentId);
     }
 
 
     public void deleteComment(long postId, long commentId) {
-        postRepository.delete(postId, commentId);
+        commentRepository.delete(postId, commentId);
     }
 
 }

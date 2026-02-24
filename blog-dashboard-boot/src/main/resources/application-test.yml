@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/yp_blogdb?sslmode=disable
+    username: postgres
+    password: postgres
+
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX:30}
+      minimum-idle: ${DB_POOL_MIN:10}
+      connection-timeout: 2000
+      idle-timeout: 180000
+      leak-detection-threshold: 0

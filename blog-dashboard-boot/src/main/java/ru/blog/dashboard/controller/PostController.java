@@ -31,55 +31,52 @@ public class PostController {
     // /api/posts?search=Lalala&pageNumber=1&pageSize=5
     @GetMapping
     @ResponseBody
-    public ListPostResponse List(ListPostRequest request) {
-       // throw new NoSuchElementException();
+    public ListPostResponse list(ListPostRequest request) {
         return postService.findByFilter(request);
     }
 
 
     @GetMapping("/{id}")
     @ResponseBody
-    public PostResponse Get(@PathVariable(name = "id") Long id) {
+    public PostResponse get(@PathVariable(name = "id") Long id) {
         return postService.findById(id);
     }
 
     @PostMapping
     @ResponseBody
-    public PostResponse Add(@RequestBody CreatePostRequest request) {
-
+    public PostResponse add(@RequestBody CreatePostRequest request) {
         var result = postService.create(request);
         return result;
-        // return new Object();
     }
 
     @PutMapping("/{id}")
     @ResponseBody
-    public PostResponse Update(@PathVariable(name = "id") Long id, @RequestBody EditRequestPostRequest request) {
+    public PostResponse update(@PathVariable(name = "id") Long id, @RequestBody EditRequestPostRequest request) {
 
         return postService.update(request);
     }
 
     @DeleteMapping("/{id}")
-    public void Delete(@PathVariable(name = "id") Long id) {
+    public void delete(@PathVariable(name = "id") Long id) {
         postService.delete(id);
     }
 
 
     @PostMapping("/{id}/likes")
     @ResponseBody
-    public int Like(@PathVariable(name = "id") Long id) {
+    public int like(@PathVariable(name = "id") Long id) {
         return postService.addLike(id);
     }
 
     @PostMapping("/{id}/image")
-    public void UploadImage(@PathVariable(name = "id") Long id, @RequestParam("file") MultipartFile file) {
-        fileStorageService.UploadImage(id, file);
+    public void uploadImage(@PathVariable(name = "id") Long id, @RequestParam("file") MultipartFile file) {
+        fileStorageService.uploadImage(id, file);
     }
 
 
     @GetMapping("/{id}/image")
-    public ResponseEntity<Resource> UploadImage(@PathVariable(name = "id") Long id) {
-        var resource = fileStorageService.DownloadImage(id);
+    public ResponseEntity<Resource> uploadImage(@PathVariable(name = "id") Long id) {
+        var resource = fileStorageService.downloadImage(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -90,13 +87,13 @@ public class PostController {
 
     @GetMapping("/{id}/comments")
     @ResponseBody
-    public List<CommentResponse> GetComments(@PathVariable(name = "id") Long id) {
+    public List<CommentResponse> getComments(@PathVariable(name = "id") Long id) {
         return postService.getComments(id);
     }
 
     @PostMapping("/{id}/comments")
     @ResponseBody
-    public CommentResponse SetComment(@PathVariable(name = "id") Long id,
+    public CommentResponse setComment(@PathVariable(name = "id") Long id,
                                       @RequestBody CreateCommentRequest request) {
         return postService.createComment(id,request);
     }
@@ -104,14 +101,14 @@ public class PostController {
 
     @GetMapping("/{id}/comments/{commentId}")
     @ResponseBody
-    public CommentResponse GetComment(@PathVariable(name = "id") Long id,
+    public CommentResponse getComment(@PathVariable(name = "id") Long id,
                                       @PathVariable(name = "commentId") Long commentId) {
         return postService.getComment(id,commentId);
     }
 
     @PutMapping("/{id}/comments/{commentId}")
     @ResponseBody
-    public CommentResponse UpdateComment(@PathVariable(name = "id") Long id,
+    public CommentResponse updateComment(@PathVariable(name = "id") Long id,
                                          @PathVariable(name = "commentId") Long commentId,
                                          @RequestBody EditCommentRequest request) {
         return postService.updateComment(id,commentId, request);
@@ -119,7 +116,7 @@ public class PostController {
 
 
     @DeleteMapping("/{id}/comments/{commentId}")
-    public void Delete(@PathVariable(name = "id") Long id,
+    public void delete(@PathVariable(name = "id") Long id,
                        @PathVariable(name = "commentId") Long commentId) {
         postService.deleteComment(id,commentId);
     }

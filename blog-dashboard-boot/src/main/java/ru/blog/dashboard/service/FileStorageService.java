@@ -22,7 +22,7 @@ public class FileStorageService {
     }
 
 
-    public void UploadImage(Long postId, MultipartFile file) {
+    public void uploadImage(Long postId, MultipartFile file) {
         try {
             var uploadDir = Paths.get(UPLOAD_DIRECTORY);
 
@@ -42,7 +42,7 @@ public class FileStorageService {
 
     }
 
-    public Resource DownloadImage(Long postId) {
+    public Resource downloadImage(Long postId) {
         try {
             var fileName = postRepository.getFileName(postId);
             var filePath = Paths.get(UPLOAD_DIRECTORY + fileName);

@@ -30,8 +30,11 @@ subprojects {
 
         // BOM
     dependencies {
-        add("implementation", platform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
-        add("testImplementation", platform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
+        add("implementation", enforcedPlatform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
+        add("testImplementation", enforcedPlatform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
+
+//        add("implementation", platform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
+//        add("testImplementation", platform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
 
 //        implementation(platform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
 //        testImplementation(platform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))

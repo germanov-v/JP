@@ -2,7 +2,7 @@ plugins{
     `java-library` // https://docs.gradle.org/current/userguide/java_library_plugin.html
 
     // BOM
-    id("io.spring.dependency-management") // https://docs.spring.io/dependency-management-plugin/docs/current/reference/html/
+    //id("io.spring.dependency-management") // https://docs.spring.io/dependency-management-plugin/docs/current/reference/html/
 }
 
 

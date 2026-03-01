@@ -1,7 +1,8 @@
 plugins {
     java
     id("org.springframework.boot") version "3.5.11"
-    id("io.spring.dependency-management") version "1.1.7"
+    // version "1.1.7"
+    id("io.spring.dependency-management")
 }
 
 group = "ru.yp.marketapp"

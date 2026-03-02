@@ -1,8 +1,5 @@
 plugins{
-    `java-library` // https://docs.gradle.org/current/userguide/java_library_plugin.html
-
-    // BOM
-    //id("io.spring.dependency-management") // https://docs.spring.io/dependency-management-plugin/docs/current/reference/html/
+    `java-library`
 }
 
 
@@ -12,10 +9,10 @@ dependencies{
     // db
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-
+    //implementation("org.liquibase:liquibase-core:4.29.2")
     // migrations
+  // implementation("org.springframework.boot:spring-boot-starter-liquibase")
     implementation("org.springframework.boot:spring-boot-starter-liquibase")
-
 
     //
     testImplementation("org.springframework.boot:spring-boot-starter-test")

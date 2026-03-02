@@ -1,7 +1,7 @@
 import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension
 
 plugins {
-    id("io.spring.dependency-management") version "1.1.7" apply false
+    id("io.spring.dependency-management")  version "1.1.7" apply false
     id("org.springframework.boot") version "3.5.11" apply false
 }
 
@@ -15,22 +15,26 @@ allprojects {
     }
 }
 
-val bootVersion = "3.5.11"
+// val bootVersion = "3.5.11"
+// gradle build
 subprojects {
     apply(plugin = "java-library")
     apply(plugin = "io.spring.dependency-management")
 
     configure<DependencyManagementExtension> {
         imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:$bootVersion")
+            mavenBom("org.springframework.boot:spring-boot-dependencies:3.5.11")
         }
-
-        dependencies {
-            dependency("org.liquibase:liquibase-core:4.25.1")
-        }
-
     }
 
     tasks.withType<Test> { useJUnitPlatform() }
-    // tasks.withType<Test>().configureEach { useJUnitPlatform() }
 }
+
+//dependencies {
+//    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+//    testImplementation("org.junit.jupiter:junit-jupiter")
+//}
+//
+//tasks.test {
+//    useJUnitPlatform()
+//}

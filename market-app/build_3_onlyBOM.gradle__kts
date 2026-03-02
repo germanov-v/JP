@@ -11,6 +11,10 @@ subprojects {
 
     dependencies {
         add("implementation", platform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
+        add("implementation", platform ("org.liquibase:liquibase-core:4.25.1"))
+        add("implementation", "org.springframework.boot:spring-boot-starter-liquibase:4.25.1")
+
+
         add("testImplementation", platform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
     }
 

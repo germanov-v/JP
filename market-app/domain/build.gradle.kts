@@ -10,6 +10,9 @@ repositories {
 }
 
 dependencies {
+   // implementation("org.liquibase:liquibase-core")
+   // implementation("org.springframework.boot:spring-boot-starter-liquibase")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }

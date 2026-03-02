@@ -27,7 +27,7 @@ subprojects {
 
         dependencies {
             dependency("org.liquibase:liquibase-core:4.25.1")
-            dependency("org.springframework.boot:spring-boot-starter-liquibase:4.25.1")
+            //dependency("org.springframework.boot:spring-boot-starter-liquibase:$bootVersion")
         }
 
     }

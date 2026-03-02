@@ -22,3 +22,12 @@
 ./gradlew projects
 или
 ./gradlew :application:dependencyInsight --dependency spring-boot-starter --configuration compileClasspath
+
+
+
+Global clean
+
+```
+rm -rf ~/.gradle/caches
+rm -rf ~/.gradle/wrapper/dists
+```

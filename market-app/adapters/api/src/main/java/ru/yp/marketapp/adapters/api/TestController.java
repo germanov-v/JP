@@ -1,4 +1,4 @@
-package Controller;
+package ru.yp.marketapp.adapters.api;
 
 
 import org.springframework.web.bind.annotation.GetMapping;

@@ -41,3 +41,10 @@ rm -rf ~/.gradle/wrapper/dists
 
 ./gradlew clean build -x test --no-daemon
 
+
+./gradlew :bootstrap:bootRun
+./gradlew :bootstrap:bootRun --args='--spring.profiles.active=dev --server.port=8085' 
+
+
+./gradlew :bootstrap:tasks --all
+

@@ -17,6 +17,7 @@
 ```
 
 
+
 Проверить есть читает ли application:
 
 ./gradlew projects
@@ -31,3 +32,12 @@ Global clean
 rm -rf ~/.gradle/caches
 rm -rf ~/.gradle/wrapper/dists
 ```
+
+
+./gradlew clean build --no-daemon
+
+
+Очистка и запуск без тестов!!!!
+
+./gradlew clean build -x test --no-daemon
+

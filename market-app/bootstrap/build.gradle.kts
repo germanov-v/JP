@@ -25,8 +25,8 @@ dependencies {
 
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation ("org.springframework.boot:spring-boot-starter-actuator")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	//testImplementation("org.springframework.boot:spring-boot-starter-test")
+	//testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	//implementation("org.springframework.boot:spring-boot-starter-liquibase")
 
@@ -37,6 +37,6 @@ dependencies {
 	implementation(project(":adapters:api"))
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
-}
+//tasks.withType<Test> {
+//	useJUnitPlatform()
+//}

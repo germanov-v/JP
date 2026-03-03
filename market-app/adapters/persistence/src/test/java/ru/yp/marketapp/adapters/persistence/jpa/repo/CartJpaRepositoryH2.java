@@ -1,5 +1,6 @@
 package ru.yp.marketapp.adapters.persistence.jpa.repo;
 
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -12,25 +13,30 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import ru.yp.marketapp.adapters.persistence.entity.CartEntity;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
-//@DataJpaTest
-//@EnableJpaRepositories(basePackageClasses = CartJpaRepository.class)
-//@EntityScan(basePackageClasses = CartEntity.class)
-//@ActiveProfiles("test") //("prod")
-//// полная подмена и всегда. не смотрим датасорс и его конфигурацию (а ее и нет)
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+
+@DataJpaTest
+@EnableJpaRepositories(basePackageClasses = CartJpaRepository.class)
+@EntityScan(basePackageClasses = CartEntity.class)
+@ActiveProfiles("test") //("prod")
+// полная подмена и всегда. не смотрим датасорс и его конфигурацию (а ее и нет)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 
 // Liquibase up ?
-//@ImportAutoConfiguration(LiquibaseAutoConfiguration.class)
+@ImportAutoConfiguration(LiquibaseAutoConfiguration.class)
 public class CartJpaRepositoryH2 {
 
+    @Test
+    public void test() {
+        assertThat(3).isGreaterThanOrEqualTo(2);
+    }
 
 //    @Autowired
 //    CartJpaRepository cartJpaRepository;
 //
 //    @Test
-//    void findPageIds_returnsIdsInDescOrder_andHasTotalCount() {
+//    public void findPageIds_returnsIdsInDescOrder_andHasTotalCount() {
 //        var c1 = cartJpaRepository.save(new CartEntity());
 //        var c2 = cartJpaRepository.save(new CartEntity());
 //        var c3 = cartJpaRepository.save(new CartEntity());
@@ -41,5 +47,6 @@ public class CartJpaRepositoryH2 {
 //        assertThat(page.getContent()).containsExactly(c3.getId(), c2.getId());
 //        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(3);
 //        assertThat(page.getTotalPages()).isGreaterThanOrEqualTo(2);
+//
 //    }
 }

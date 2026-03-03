@@ -18,10 +18,16 @@ dependencies{
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     // for integration tests
-    testImplementation("org.testcontainers:postgresql")
-    testImplementation("org.testcontainers:junit-jupiter")
+   // testImplementation("org.testcontainers:postgresql")
+   // testImplementation("org.testcontainers:junit-jupiter")
     //testImplementation("com.h2database:h2")
 
 
     //testImplementation("org.springframework.boot:spring-boot-starter-liquibase")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    forkEvery = 0
+    maxParallelForks = 1
 }

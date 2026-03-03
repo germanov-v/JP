@@ -7,6 +7,6 @@ import ru.yp.marketapp.adatapters.persistence.entity.CartEntity;
 public interface CartJpaRepository extends JpaRepository<CartEntity, Long> {
 
 
-    //  @Query
+
 
 }

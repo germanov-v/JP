@@ -43,6 +43,8 @@ rm -rf ~/.gradle/wrapper/dists
 
 
 ./gradlew :bootstrap:bootRun
+
+(!) 
 ./gradlew :bootstrap:bootRun --args='--spring.profiles.active=dev --server.port=8085' 
 
 
@@ -50,3 +52,5 @@ rm -rf ~/.gradle/wrapper/dists
 
 
 ./gradlew :adapters:persistence:test --info
+
+./gradlew :adapters:persistence:test --tests "*CartJpaRepositoryH2*" --stacktrace

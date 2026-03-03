@@ -1,4 +1,4 @@
-package ru.yp.marketapp.adatapters.persistence.repository;
+package ru.yp.marketapp.adapters.persistence.repository;
 
 import org.springframework.stereotype.Repository;
 import product.Product;

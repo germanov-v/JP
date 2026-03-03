@@ -1,4 +1,5 @@
-package ru.yp.marketapp.adatapters.persistence.entity;
+package ru.yp.marketapp.adapters.persistence.entity;
+
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
@@ -7,14 +8,13 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "cart_item", schema = "market",
-        uniqueConstraints = @UniqueConstraint(name = "uq_cart_item_cart_product", columnNames = {"cart_id", "product_id"}),
+@Table(name = "order_item", schema = "market",
         indexes = {
-                @Index(name = "ix_cart_item_cart_id", columnList = "cart_id"),
-                @Index(name = "ix_cart_item_product_id", columnList = "product_id"),
-                @Index(name = "ix_cart_item_guid_id", columnList = "guid_id")
+                @Index(name = "ix_order_item_order_id", columnList = "order_id"),
+                @Index(name = "ix_order_item_product_id", columnList = "product_id"),
+                @Index(name = "ix_order_item_guid_id", columnList = "guid_id")
         })
-public class CartItemEntity {
+public class OrderItemEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +25,11 @@ public class CartItemEntity {
     private UUID guidId;
 
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false)
-     private OffsetDateTime createdAt;
+   private OffsetDateTime createdAt;
 
-    // todo: test FetchType.EAGER
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "cart_id", nullable = false)
-    private CartEntity cart;
+    @JoinColumn(name = "order_id", nullable = false)
+    private OrderEntity order;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
@@ -38,6 +37,7 @@ public class CartItemEntity {
 
     @Column(nullable = false)
     private int quantity;
+
 
     public Long getId() {
         return id;
@@ -63,12 +63,12 @@ public class CartItemEntity {
         this.createdAt = createdAt;
     }
 
-    public CartEntity getCart() {
-        return cart;
+    public OrderEntity getOrder() {
+        return order;
     }
 
-    public void setCart(CartEntity cart) {
-        this.cart = cart;
+    public void setOrder(OrderEntity order) {
+        this.order = order;
     }
 
     public ProductEntity getProduct() {

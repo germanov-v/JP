@@ -1,4 +1,4 @@
-package ru.yp.marketapp.adatapters.persistence.jpa.repo;
+package ru.yp.marketapp.adapters.persistence.jpa.repo;
 
 
 import org.springframework.data.domain.Page;
@@ -6,10 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.yp.marketapp.adatapters.persistence.entity.CartEntity;
+import ru.yp.marketapp.adapters.persistence.entity.CartEntity;
 
 import java.util.List;
-import java.util.UUID;
 
 
 public interface CartJpaRepository extends JpaRepository<CartEntity, Long> {

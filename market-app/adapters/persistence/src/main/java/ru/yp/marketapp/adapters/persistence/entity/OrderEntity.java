@@ -1,4 +1,4 @@
-package ru.yp.marketapp.adatapters.persistence.entity;
+package ru.yp.marketapp.adapters.persistence.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;

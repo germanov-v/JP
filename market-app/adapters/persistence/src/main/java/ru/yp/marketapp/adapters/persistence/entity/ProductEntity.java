@@ -1,11 +1,8 @@
-package ru.yp.marketapp.adatapters.persistence.entity;
+package ru.yp.marketapp.adapters.persistence.entity;
 
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.generator.EventType;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;

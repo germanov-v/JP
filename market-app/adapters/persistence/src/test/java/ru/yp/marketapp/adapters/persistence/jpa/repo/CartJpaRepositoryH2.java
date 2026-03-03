@@ -32,21 +32,21 @@ public class CartJpaRepositoryH2 {
         assertThat(3).isGreaterThanOrEqualTo(2);
     }
 
-//    @Autowired
-//    CartJpaRepository cartJpaRepository;
-//
-//    @Test
-//    public void findPageIds_returnsIdsInDescOrder_andHasTotalCount() {
-//        var c1 = cartJpaRepository.save(new CartEntity());
-//        var c2 = cartJpaRepository.save(new CartEntity());
-//        var c3 = cartJpaRepository.save(new CartEntity());
-//
-//        // Act
-//        var page = cartJpaRepository.findPageIds(PageRequest.of(0, 2));
-//
-//        assertThat(page.getContent()).containsExactly(c3.getId(), c2.getId());
-//        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(3);
-//        assertThat(page.getTotalPages()).isGreaterThanOrEqualTo(2);
-//
-//    }
+    @Autowired
+    CartJpaRepository cartJpaRepository;
+
+    @Test
+    public void findPageIds_returnsIdsInDescOrder_andHasTotalCount() {
+        var c1 = cartJpaRepository.save(new CartEntity());
+        var c2 = cartJpaRepository.save(new CartEntity());
+        var c3 = cartJpaRepository.save(new CartEntity());
+
+        // Act
+        var page = cartJpaRepository.findPageIds(PageRequest.of(0, 2));
+
+        assertThat(page.getContent()).containsExactly(c3.getId(), c2.getId());
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(3);
+        assertThat(page.getTotalPages()).isGreaterThanOrEqualTo(2);
+
+    }
 }

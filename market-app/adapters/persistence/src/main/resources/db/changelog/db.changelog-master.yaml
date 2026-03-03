@@ -9,3 +9,6 @@ databaseChangeLog:
             splitStatements: true
             stripComments: true
             endDelimiter: ;
+#  idea generator
+#  - include:
+#      file: ru/yp/marketapp/adatapters/persistence/entity/03-01-changelog.sql

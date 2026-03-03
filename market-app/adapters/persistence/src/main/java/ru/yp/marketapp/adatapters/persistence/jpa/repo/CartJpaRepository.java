@@ -5,8 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.yp.marketapp.adatapters.persistence.entity.CartEntity;
 
+import java.util.List;
+import java.util.UUID;
 
 
 public interface CartJpaRepository extends JpaRepository<CartEntity, Long> {
@@ -20,5 +23,16 @@ public interface CartJpaRepository extends JpaRepository<CartEntity, Long> {
     )
     Page<Long> findPageIds(Pageable pageable);
 
+
+    @Query(value = """
+              select distinct c from market.cart c
+               left join  c.items i ON c.id=i.cart_id
+               left join market.product p ON i.product_id=p.id
+               where c.id in :ids
+           """,
+            nativeQuery = true
+
+    )
+    List<CartEntity> findByIds(@Param("ids") List<Long> ids);
 
 }

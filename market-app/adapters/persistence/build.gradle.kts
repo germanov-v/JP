@@ -20,4 +20,5 @@ dependencies{
     // for integration tests
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("com.h2database:h2")
 }

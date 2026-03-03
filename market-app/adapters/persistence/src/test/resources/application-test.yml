@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: >
+      jdbc:h2:mem:market_test;
+      MODE=PostgreSQL;
+      DATABASE_TO_LOWER=TRUE;
+      DEFAULT_NULL_ORDERING=HIGH;
+      DB_CLOSE_DELAY=-1;
+      INIT=CREATE SCHEMA IF NOT EXISTS market\;
+           CREATE ALIAS IF NOT EXISTS gen_random_uuid FOR "java.util.UUID.randomUUID";
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+# https://docs.spring.io/spring-boot/reference/features/external-config.html
+# https://www.h2database.com/html/features.html
+# https://contribute.liquibase.com/extensions-integrations/directory/integration-docs/springboot/configuration/

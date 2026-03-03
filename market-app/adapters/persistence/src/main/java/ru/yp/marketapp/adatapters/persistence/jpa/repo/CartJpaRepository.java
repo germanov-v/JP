@@ -25,10 +25,13 @@ public interface CartJpaRepository extends JpaRepository<CartEntity, Long> {
 
 
     @Query(value = """
-              select distinct c from market.cart c
-               left join  c.items i ON c.id=i.cart_id
-               left join market.product p ON i.product_id=p.id
-               where c.id in :ids
+
+            select distinct c.*
+             from market.cart c
+             left join market.cart_item i on i.cart_id = c.id
+             left join market.product p on p.id = i.product_id
+                 where c.id = any(:ids)
+             order by c.id desc
            """,
             nativeQuery = true
 

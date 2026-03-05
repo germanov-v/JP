@@ -1,6 +1,8 @@
 package ru.yp.marketapp.adapters.web.controller;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,11 +32,13 @@ public class ItemController {
                        @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
                        HttpServletResponse response,
                        Model model) {
-       // todo: setCartCookie
+        // todo: setCartCookie
+        var cartId = cart.GetOrCreateCartId(cartIdCookie);
+        setCartCookie(response, cartId, cartIdCookie);
 
         var item = catalog.findItem(id)
                 .map(i -> new ItemView(i.id(), i.title(), i.description(), i.imgPath(), i.price(),
-                        cart.getCount(cartIdCookie, i.id())))
+                        cart.getCount(cartId, i.id())))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         model.addAttribute("item", item);
@@ -44,14 +48,32 @@ public class ItemController {
     @PostMapping("/{id}")
     public String changeFromCard(@PathVariable long id,
                                  @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
+                                 HttpServletResponse response,
                                  @RequestParam(name = "action") CartActionEnum action) {
 
-        // todo: setCartCookie
-        cart.changeCount(cartIdCookie, id, action);
+
+
+        var cartId = cart.GetOrCreateCartId(cartIdCookie);
+        setCartCookie(response, cartId, cartIdCookie);
+
+        cart.changeCount(cartId, id, action);
         return "redirect:/items/" + id;
     }
 
-    private void setCartCookie(HttpServletResponse response, long cartId) {
+    private void setCartCookie(HttpServletResponse response, long cartId, Long cartIdCookieId) {
 
+        if(cartIdCookieId!=null&&cartIdCookieId==cartId){
+            return;
+        }
+
+
+
+        var cookie = new Cookie(CART_COOKIE, Long.toString(cartId));
+
+        cookie.setMaxAge(3600 * 30);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
     }
 }

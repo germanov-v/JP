@@ -1,5 +1,7 @@
 package ru.yp.marketapp.adapters.web.view;
 
+import product.Product;
+
 import java.math.BigDecimal;
 
 public record ItemView(
@@ -12,5 +14,17 @@ public record ItemView(
 ) {
     public static ItemView emptyCell() {
         return new ItemView(-1, "", "", "", BigDecimal.ZERO, 0);
+    }
+
+    public static ItemView fromDomainCount(Product product, int count) {
+
+        return new ItemView(
+                product.getId(),
+                product.getTitle(),
+                product.getDescription(),
+                product.getImgPath(),
+                BigDecimal.valueOf(product.getPrice()),
+                count
+        );
     }
 }

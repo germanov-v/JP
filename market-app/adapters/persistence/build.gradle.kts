@@ -16,11 +16,12 @@ dependencies{
 
     //
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // for integration tests
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:junit-jupiter")
-   testImplementation("com.h2database:h2")
+  // testImplementation("com.h2database:h2")
 
 
     //testImplementation("org.springframework.boot:spring-boot-starter-liquibase")
@@ -28,6 +29,6 @@ dependencies{
 
 tasks.test {
     useJUnitPlatform()
-    forkEvery = 0
-    maxParallelForks = 1
+  //  forkEvery = 0 // Сколько тестов (классов) запускать в одном JVM-процессе, прежде чем “форкнуть” новый.
+  //  maxParallelForks = 1
 }

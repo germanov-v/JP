@@ -18,7 +18,7 @@ subprojects {
                 add("testImplementation", platform("org.springframework.boot:spring-boot-dependencies:$bootVersion"))
     }
 
-  //  tasks.withType<Test>().configureEach { useJUnitPlatform() }
+    tasks.withType<Test>().configureEach { useJUnitPlatform() }
 }
 
 configure(subprojects.filter { it.name != "bootstrap" }) {

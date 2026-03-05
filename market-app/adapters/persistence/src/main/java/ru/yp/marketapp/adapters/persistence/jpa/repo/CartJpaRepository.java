@@ -17,7 +17,7 @@ public interface CartJpaRepository extends JpaRepository<CartEntity, Long> {
     @Query(
            // value = "select c.id from CartEntity c order by c.id desc",
           //  countQuery = "select count(c) from CartEntity c"
-            value = "select c.id from market.cart order by c.id desc",
+            value = "select c.id from market.cart c order by c.id desc",
             countQuery = "select count(*) from market.cart",
             nativeQuery = true
     )

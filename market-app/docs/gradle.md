@@ -54,3 +54,9 @@ rm -rf ~/.gradle/wrapper/dists
 ./gradlew :adapters:persistence:test --info
 
 ./gradlew :adapters:persistence:test --tests "*CartJpaRepositoryH2*" --stacktrace
+
+Зависимости:
+
+```
+./gradlew :adapters:persistence:dependencies --configuration testCompileClasspath | grep junit
+```

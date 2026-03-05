@@ -48,6 +48,7 @@ public class OrderItemEntity {
         result.setProductId(product.getId());
         result.setQuantity(quantity);
         result.setCreatedAt(createdAt);
+        result.setProduct(product.toDomain());
         return result;
     }
 

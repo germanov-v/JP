@@ -37,7 +37,7 @@ dependencies {
 	implementation(project(":adapters:web"))
 	implementation(project(":adapters:api"))
 
-
+	testImplementation("jakarta.servlet:jakarta.servlet-api")
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	testImplementation(project(":application"))

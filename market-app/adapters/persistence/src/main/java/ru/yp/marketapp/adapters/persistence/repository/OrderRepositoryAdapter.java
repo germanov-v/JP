@@ -21,8 +21,8 @@ public class OrderRepositoryAdapter implements OrderRepository {
 
     @Override
     public List<Order> findAll() {
-        return orderJpaRepository
-                .findAllWithItems().stream()
+        var items = orderJpaRepository.findAllWithItems();
+        return items.stream()
                 .map(OrderEntity::toDomain)
                 .toList();
     }

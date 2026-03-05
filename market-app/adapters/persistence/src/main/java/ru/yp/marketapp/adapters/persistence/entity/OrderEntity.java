@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "\"order\"", schema = "market",
@@ -35,6 +36,8 @@ public class OrderEntity {
         result.setGuidId(guidId);
         result.setCreatedAt(createdAt);
         result.setId(id);
+
+        result.setItems(getItems().stream().map(OrderItemEntity::toDomain).toList());
         return result;
     }
 

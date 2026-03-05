@@ -19,7 +19,8 @@ public class OrdersQueryImpl implements OrdersQuery {
 
     @Override
     public List<OrderView> findAll() {
-        return orderRepository.findAll()
+        var items = orderRepository.findAll();
+        return items
                 .stream().map(OrderView::fromDomain)
                 .toList();
     }

@@ -68,7 +68,7 @@ public class ProductRepositoryAdapter implements ProductRepository {
                     // todo: по идее с корзины надо брать
                     int count = 0;
                     if(cartId.isPresent()) {
-                        count = cartItemJpaRepository.findQuantity(cartId.get(), p.getId());
+                        count = cartItemJpaRepository.findQuantity(cartId.get(), p.getId()).orElse(0);
                     }
                     return new ProductCountResult(p.toDomain(), count);
                 })
@@ -91,7 +91,7 @@ public class ProductRepositoryAdapter implements ProductRepository {
         }
         var count = 0;
         if (cartId != null) {
-           count = cartItemJpaRepository.findQuantity(cartId, id);
+           count = cartItemJpaRepository.findQuantity(cartId, id).orElse(0);
         }
 
 

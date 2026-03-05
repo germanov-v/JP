@@ -12,7 +12,8 @@ import ru.yp.marketapp.adapters.persistence.entity.CartEntity;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+
+
 public interface CartJpaRepository extends JpaRepository<CartEntity, Long> {
 
     @Query(

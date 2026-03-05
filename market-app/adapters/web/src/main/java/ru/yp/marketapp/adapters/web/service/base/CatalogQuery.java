@@ -1,6 +1,6 @@
 package ru.yp.marketapp.adapters.web.service.base;
 
-import ru.yp.marketapp.adapters.web.model.PageResult;
+import ru.yp.marketapp.appplication.result.PageResult;
 import ru.yp.marketapp.adapters.web.view.ItemView;
 import ru.yp.marketapp.adapters.web.view.SortView;
 

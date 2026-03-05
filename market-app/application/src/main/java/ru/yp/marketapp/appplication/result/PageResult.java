@@ -1,4 +1,4 @@
-package ru.yp.marketapp.adapters.web.model;
+package ru.yp.marketapp.appplication.result;
 
 import java.util.List;
 

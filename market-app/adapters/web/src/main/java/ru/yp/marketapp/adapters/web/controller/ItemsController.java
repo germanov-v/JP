@@ -55,14 +55,14 @@ public class ItemsController {
 
     @PostMapping
     public String changeFromList(
-            @RequestParam long id,
-            @RequestParam CartActionView action,
+            @RequestParam(name = "id") long id,
+            @RequestParam(name = "action") CartActionView action,
 
 
-            @RequestParam(name="", required = false, defaultValue = "") String search,
-            @RequestParam(required = false, defaultValue = "NO") SortView sort,
-            @RequestParam(required = false, defaultValue = "10") int pageSize,
-            @RequestParam(required = false, defaultValue = "1") int pageNumber,
+            @RequestParam(name="search", required = false, defaultValue = "") String search,
+            @RequestParam(name="sort",required = false, defaultValue = "NO") SortView sort,
+            @RequestParam(name="pageSize",required = false, defaultValue = "10") int pageSize,
+            @RequestParam(name="pageNumber",required = false, defaultValue = "1") int pageNumber,
 
             RedirectAttributes ra
     ) {

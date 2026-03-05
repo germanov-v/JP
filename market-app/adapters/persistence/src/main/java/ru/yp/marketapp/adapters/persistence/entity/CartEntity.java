@@ -1,6 +1,8 @@
 package ru.yp.marketapp.adapters.persistence.entity;
 
 
+import cart.Cart;
+import cart.CartItem;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -8,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "cart", schema = "market",
@@ -28,6 +31,15 @@ public class CartEntity {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItemEntity> items = new ArrayList<>();
 
+    public Cart toDomain(){
+        var result = new Cart();
+        result.setGuidId(guidId);
+        result.setId(id);
+        result.setCreatedAt(createdAt);
+        result.setItems(getItems().stream().map(CartItemEntity::toDomain).collect(Collectors.toList()));
+
+        return result;
+    }
 
     public Long getId() {
         return id;

@@ -1,6 +1,8 @@
 package ru.yp.marketapp.adapters.persistence.entity;
 
 import jakarta.persistence.*;
+import order.Order;
+import order.OrderItem;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.OffsetDateTime;
@@ -26,6 +28,16 @@ public class OrderEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> items = new ArrayList<>();
+
+
+    public Order toDomain(){
+        var result = new Order();
+        result.setGuidId(guidId);
+        result.setCreatedAt(createdAt);
+        result.setId(id);
+        return result;
+    }
+
 
     public Long getId() {
         return id;

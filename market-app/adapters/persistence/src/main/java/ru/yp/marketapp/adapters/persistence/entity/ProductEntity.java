@@ -3,6 +3,7 @@ package ru.yp.marketapp.adapters.persistence.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
+import product.Product;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -38,6 +39,19 @@ public class ProductEntity {
     @Column(nullable = false)
     private int count;
 
+
+
+    public Product toDomain(){
+        var result = new Product();
+        result.setGuidId(guidId);
+        result.setTitle(title);
+        result.setDescription(description);
+        result.setImgPath(imgPath);
+        result.setPrice(price);
+        result.setCount(count);
+        result.setId(id);
+        return result;
+    }
 
 
     public void setId(Long id) {

@@ -1,7 +1,9 @@
 package ru.yp.marketapp.adapters.persistence.entity;
 
+import cart.CartItem;
 import jakarta.persistence.*;
 import org.hibernate.annotations.UuidGenerator;
+import product.Product;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -38,6 +40,19 @@ public class CartItemEntity {
 
     @Column(nullable = false)
     private int quantity;
+
+
+    public CartItem toDomain(){
+        var result = new CartItem();
+        result.setGuidId(guidId);
+        result.setId(id);
+        result.setCreatedAt(createdAt);
+        result.setQuantity(quantity);
+        result.setCartId(cart.getId());
+        result.setProductId(product.getId());
+
+        return result;
+    }
 
     public Long getId() {
         return id;

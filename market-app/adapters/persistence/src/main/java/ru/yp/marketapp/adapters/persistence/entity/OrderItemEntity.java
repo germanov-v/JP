@@ -2,7 +2,9 @@ package ru.yp.marketapp.adapters.persistence.entity;
 
 
 import jakarta.persistence.*;
+import order.OrderItem;
 import org.hibernate.annotations.UuidGenerator;
+import product.Product;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -38,6 +40,16 @@ public class OrderItemEntity {
     @Column(nullable = false)
     private int quantity;
 
+
+    public OrderItem toDomain(){
+        var result = new OrderItem();
+        result.setId(id);
+        result.setOrderId(order.getId());
+        result.setProductId(product.getId());
+        result.setQuantity(quantity);
+        result.setCreatedAt(createdAt);
+        return result;
+    }
 
     public Long getId() {
         return id;

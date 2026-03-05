@@ -1,6 +1,7 @@
 package ru.yp.marketapp.appplication.repositories;
 
 import product.Product;
+import ru.yp.marketapp.appplication.model.SortEnum;
 import ru.yp.marketapp.appplication.result.PageResult;
 
 import java.util.Optional;
@@ -13,5 +14,5 @@ public interface ProductRepository {
 
     Optional<Product> findById(Long id);
 
-    PageResult<Product> findItems(String search, SortView sort, int pageNumber, int pageSize);
+    PageResult<Product> findItems(String search, SortEnum sort, int pageNumber, int pageSize);
 }

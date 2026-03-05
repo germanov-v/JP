@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.yp.marketapp.adapters.web.service.base.CartUseCase;
 import ru.yp.marketapp.adapters.web.service.base.CatalogQuery;
-import ru.yp.marketapp.adapters.web.view.CartActionView;
 import ru.yp.marketapp.adapters.web.view.ItemView;
 import ru.yp.marketapp.adapters.web.view.PagingView;
-import ru.yp.marketapp.adapters.web.view.SortView;
+import ru.yp.marketapp.appplication.model.CartActionEnum;
+import ru.yp.marketapp.appplication.model.SortEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class ItemsController {
     @GetMapping
     public String items(
             @RequestParam(name = "search", required = false, defaultValue = "") String search,
-            @RequestParam(name = "sort", required = false, defaultValue = "NO") SortView sort,
+            @RequestParam(name = "sort", required = false, defaultValue = "NO") SortEnum sort,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(name = "pageNumber", required = false, defaultValue = "1") int pageNumber,
             Model model
@@ -56,11 +56,11 @@ public class ItemsController {
     @PostMapping
     public String changeFromList(
             @RequestParam(name = "id") long id,
-            @RequestParam(name = "action") CartActionView action,
+            @RequestParam(name = "action") CartActionEnum action,
 
 
             @RequestParam(name="search", required = false, defaultValue = "") String search,
-            @RequestParam(name="sort",required = false, defaultValue = "NO") SortView sort,
+            @RequestParam(name="sort",required = false, defaultValue = "NO") SortEnum sort,
             @RequestParam(name="pageSize",required = false, defaultValue = "10") int pageSize,
             @RequestParam(name="pageNumber",required = false, defaultValue = "1") int pageNumber,
 

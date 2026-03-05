@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yp.marketapp.adapters.web.service.base.CartUseCase;
 import ru.yp.marketapp.adapters.web.service.base.CatalogQuery;
-import ru.yp.marketapp.adapters.web.view.CartActionView;
 import ru.yp.marketapp.adapters.web.view.ItemView;
+import ru.yp.marketapp.appplication.model.CartActionEnum;
 
 @Controller
 @RequestMapping("/items")
@@ -34,7 +34,7 @@ public class ItemController {
 
     @PostMapping("/{id}")
     public String changeFromCard(@PathVariable long id,
-                                 @RequestParam(name = "action") CartActionView action) {
+                                 @RequestParam(name = "action") CartActionEnum action) {
         cart.changeCount(id, action);
         return "redirect:/items/" + id;
     }

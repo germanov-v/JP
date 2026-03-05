@@ -1,0 +1,101 @@
+package ru.yp.marketapp.adapters.web.controller;
+
+
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.yp.marketapp.adapters.web.controller.base.CookieController;
+import ru.yp.marketapp.adapters.web.service.base.CartUseCase;
+import ru.yp.marketapp.adapters.web.service.base.CatalogQuery;
+import ru.yp.marketapp.adapters.web.view.ItemView;
+import ru.yp.marketapp.adapters.web.view.PagingView;
+import ru.yp.marketapp.appplication.model.CartActionEnum;
+import ru.yp.marketapp.appplication.model.SortEnum;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+@RequestMapping("/items")
+public class ItemsController   implements CookieController {
+
+    private final CatalogQuery catalog;
+    private final CartUseCase cart;
+
+    public ItemsController(CatalogQuery catalog, CartUseCase cart) {
+        this.catalog = catalog;
+        this.cart = cart;
+    }
+
+    @GetMapping
+    public String items(
+            @RequestParam(name = "search", required = false, defaultValue = "") String search,
+            @RequestParam(name = "sort", required = false, defaultValue = "NO") SortEnum sort,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @RequestParam(name = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+            @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
+            HttpServletResponse response,
+            Model model
+    ) {
+
+        var cartId = cart.GetOrCreateCartId(cartIdCookie);
+        setCartCookie(response, cartId, cartIdCookie);
+
+        var page = catalog.findItems(search, sort, pageNumber, pageSize, cartId);
+
+
+//        // TODO: remove N+1
+//        var enriched = page.items().stream()
+//                .map(i -> new ItemView(i.id(), i.title(), i.description(), i.imgPath(), i.price(),
+//                        cart.getCount(cartId,i.id())))
+//                .toList();
+
+        //  ЛистЛистАйтимВью
+        model.addAttribute("items", toRows(page.items(), 3));
+        model.addAttribute("search", search);
+        model.addAttribute("sort", sort);
+        model.addAttribute("paging", new PagingView(page.pageNumber(), page.pageSize(), page.hasPrev(), page.hasNext()));
+        return "items";
+    }
+
+    @PostMapping
+    public String changeFromList(
+            @RequestParam(name = "id") long id,
+            @RequestParam(name = "action") CartActionEnum action,
+
+
+            @RequestParam(name="search", required = false, defaultValue = "") String search,
+            @RequestParam(name="sort",required = false, defaultValue = "NO") SortEnum sort,
+            @RequestParam(name="pageSize",required = false, defaultValue = "10") int pageSize,
+            @RequestParam(name="pageNumber",required = false, defaultValue = "1") int pageNumber,
+            @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
+            HttpServletResponse response,
+            RedirectAttributes ra
+    ) {
+        var cartId = cart.GetOrCreateCartId(cartIdCookie);
+        setCartCookie(response, cartId, cartIdCookie);
+        cart.changeCount(cartId,id, action);
+
+        ra.addAttribute("search", search);
+        ra.addAttribute("sort", sort);
+        ra.addAttribute("pageSize", pageSize);
+        ra.addAttribute("pageNumber", pageNumber);
+        return "redirect:/items";
+    }
+
+    private static List<List<ItemView>> toRows(List<ItemView> items, int columns) {
+        var rows = new ArrayList<List<ItemView>>();
+        for (int i = 0; i < items.size(); i += columns) {
+            var row = new ArrayList<ItemView>(columns);
+            for (int j = 0; j < columns; j++) {
+                int idx = i + j;
+                row.add(idx < items.size() ? items.get(idx) : ItemView.emptyCell());
+            }
+            rows.add(row);
+        }
+
+        return rows;
+    }
+}

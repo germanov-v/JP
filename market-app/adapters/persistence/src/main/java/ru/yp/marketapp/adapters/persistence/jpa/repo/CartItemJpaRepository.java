@@ -21,7 +21,7 @@ public interface CartItemJpaRepository extends JpaRepository<CartItemEntity, Lon
         select coalesce(ci.quantity, 0) from CartItemEntity ci
         where ci.cart.id = :cartId and ci.product.id = :productId
         """)
-    Integer findQuantity(@Param("cartId") long cartId,
+     Integer findQuantity(@Param("cartId") long cartId,
                          @Param("productId") long productId);
 
     @Modifying

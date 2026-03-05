@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public  interface CookieController {
 
 
-    static final String CART_COOKIE = "cartId";
+    public static final String CART_COOKIE = "cartId";
     default void setCartCookie(HttpServletResponse response, long cartId, Long cartIdCookieId
                                ) {
 

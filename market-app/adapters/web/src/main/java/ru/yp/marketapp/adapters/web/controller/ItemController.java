@@ -18,7 +18,7 @@ import ru.yp.marketapp.appplication.model.CartActionEnum;
 @RequestMapping("/items")
 public class ItemController implements CookieController {
 
-    private static final String CART_COOKIE = "cartId";
+    //  private static final String CART_COOKIE = "cartId";
 
     private final CatalogQuery catalog;
     private final CartUseCase cart;
@@ -29,7 +29,7 @@ public class ItemController implements CookieController {
     }
 
     @GetMapping("/{id}")
-    public String item(@PathVariable long id,
+    public String item(@PathVariable Long id,
                        @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
                        HttpServletResponse response,
                        Model model) {

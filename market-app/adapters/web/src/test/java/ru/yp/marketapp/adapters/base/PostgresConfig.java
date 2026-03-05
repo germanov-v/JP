@@ -14,11 +14,10 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.yp.marketapp.adapters.persistence.entity.CartEntity;
 import ru.yp.marketapp.adapters.persistence.jpa.repo.CartJpaRepository;
-import ru.yp.marketapp.adapters.web.controllers.ItemControllerTests;
 
 
 //@EnableJpaRepositories(basePackageClasses = CartJpaRepository.class)
-public abstract class PostgresConfig {
+ abstract class PostgresConfig {
 
     @Container
     static final PostgreSQLContainer<?> postgresContainer =

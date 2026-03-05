@@ -36,8 +36,26 @@ dependencies {
 
 	implementation(project(":adapters:web"))
 	implementation(project(":adapters:api"))
+
+
+	testImplementation("org.junit.jupiter:junit-jupiter")
+	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	testImplementation(project(":application"))
+	testImplementation(project(":adapters:persistence"))
+	testImplementation(project(":adapters:persistence"))
+	testImplementation(project(":adapters:persistence"))
+	testImplementation(project(":adapters:persistence"))
+	testImplementation(project(":adapters:persistence"))
+	testImplementation(project(":adapters:persistence"))
+	testImplementation(project(":adapters:persistence"))
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	testRuntimeOnly("org.postgresql:postgresql")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.testcontainers:postgresql")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.liquibase:liquibase-core")
 }
 
-//tasks.withType<Test> {
-//	useJUnitPlatform()
-//}
+tasks.withType<Test> {
+	useJUnitPlatform()
+}

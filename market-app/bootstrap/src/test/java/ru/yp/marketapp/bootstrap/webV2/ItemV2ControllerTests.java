@@ -1,30 +1,27 @@
-package ru.yp.marketapp.adapters.web.controllers;
+package ru.yp.marketapp.bootstrap.webV2;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
-//import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.yp.marketapp.adapters.base.PostgresConfig;
-import ru.yp.marketapp.adapters.persistence.entity.CartEntity;
-import ru.yp.marketapp.adapters.persistence.entity.ProductEntity;
-import ru.yp.marketapp.adapters.persistence.jpa.repo.CartJpaRepository;
+import ru.yp.marketapp.BootstrapApplication;
 import ru.yp.marketapp.adapters.persistence.jpa.repo.ProductJpaRepository;
+import ru.yp.marketapp.adapters.persistence.repository.ProductRepositoryAdapter;
 import ru.yp.marketapp.appplication.repositories.ProductRepository;
+
+import ru.yp.marketapp.adapters.persistence.entity.ProductEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,24 +29,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-
 @Testcontainers
-// @DataJpaTest
-@EnableJpaRepositories(basePackages = {"ru.yp.marketapp.adapters.persistence"})
-@EntityScan(basePackages = {"ru.yp.marketapp.adapters.persistence"})
-
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-
-@ContextConfiguration(classes = ItemControllerTests.TestConfig.class)
-@SpringBootTest
+@SpringBootTest(classes = {BootstrapApplication.class, ItemV2ControllerTests.TestConfig.class})
+//@DataJpaTest // ЭТО ПЛОХОЙ ВАРИАНТ С SpringBootTest]р
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+//@Import( ProductRepositoryAdapter.class)
+//@EnableJpaRepositories(basePackages = {"ru.yp.marketapp.adapters.persistence"})
 @AutoConfigureMockMvc
-@ComponentScan(basePackages = {
-        "ru.yp.marketapp.application",
-        "ru.yp.marketapp.adapters.web",
-        "ru.yp.marketapp.adapters.persistence"
-})
- class ItemControllerTests {
+@ActiveProfiles("test")
+public class ItemV2ControllerTests {
 
     @Container
     static final PostgreSQLContainer<?> postgresContainer =

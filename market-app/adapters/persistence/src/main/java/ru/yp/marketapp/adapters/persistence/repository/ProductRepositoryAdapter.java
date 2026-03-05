@@ -28,6 +28,11 @@ public class ProductRepositoryAdapter implements ProductRepository {
 
     private CartItemJpaRepository cartItemJpaRepository;
 
+    public ProductRepositoryAdapter(ProductJpaRepository productJpaRepository, CartItemJpaRepository cartItemJpaRepository) {
+        this.productJpaRepository = productJpaRepository;
+        this.cartItemJpaRepository = cartItemJpaRepository;
+    }
+
     @Override
     public Optional<Product> findByGuidId(UUID guidId) {
         return Optional.empty();

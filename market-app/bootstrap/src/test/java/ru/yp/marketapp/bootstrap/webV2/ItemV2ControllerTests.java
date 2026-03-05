@@ -73,7 +73,7 @@ public class ItemV2ControllerTests {
     @Autowired
     ProductJpaRepository productJpaRepository;
 
-  //  @Test
+  @Test
 
     public void getItemSetCookieRenderView() throws Exception {
         long productId = seedProduct();
@@ -86,7 +86,7 @@ public class ItemV2ControllerTests {
                 .andExpect(cookie().exists("cartId"));
     }
 
-  //  @Test
+   @Test
     public void itemPlusSetCookie() throws Exception {
         long productId = seedProduct();
 

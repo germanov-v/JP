@@ -1,13 +1,12 @@
 package ru.yp.marketapp.adapters.web.controller;
 
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.yp.marketapp.adapters.web.controller.base.CookieController;
 import ru.yp.marketapp.adapters.web.service.base.CartUseCase;
 import ru.yp.marketapp.adapters.web.service.base.CatalogQuery;
 import ru.yp.marketapp.adapters.web.view.ItemView;
@@ -20,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/items")
-public class ItemsController {
+public class ItemsController   implements CookieController {
 
     private final CatalogQuery catalog;
     private final CartUseCase cart;
@@ -36,13 +35,21 @@ public class ItemsController {
             @RequestParam(name = "sort", required = false, defaultValue = "NO") SortEnum sort,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(name = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+            @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
+            HttpServletResponse response,
             Model model
     ) {
+
+        var cartId = cart.GetOrCreateCartId(cartIdCookie);
+        setCartCookie(response, cartId, cartIdCookie);
+
         var page = catalog.findItems(search, sort, pageNumber, pageSize);
 
-        // добавить ли count из корзины или CatalogQuery как времянку?
+
+        // TODO: remove N+1
         var enriched = page.items().stream()
-                .map(i -> new ItemView(i.id(), i.title(), i.description(), i.imgPath(), i.price(), cart.getCount(i.id())))
+                .map(i -> new ItemView(i.id(), i.title(), i.description(), i.imgPath(), i.price(),
+                        cart.getCount(cartId,i.id())))
                 .toList();
 
         //  ЛистЛистАйтимВью
@@ -63,10 +70,13 @@ public class ItemsController {
             @RequestParam(name="sort",required = false, defaultValue = "NO") SortEnum sort,
             @RequestParam(name="pageSize",required = false, defaultValue = "10") int pageSize,
             @RequestParam(name="pageNumber",required = false, defaultValue = "1") int pageNumber,
-
+            @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
+            HttpServletResponse response,
             RedirectAttributes ra
     ) {
-        cart.changeCount(id, action);
+        var cartId = cart.GetOrCreateCartId(cartIdCookie);
+        setCartCookie(response, cartId, cartIdCookie);
+        cart.changeCount(cartId,id, action);
 
         ra.addAttribute("search", search);
         ra.addAttribute("sort", sort);

@@ -25,7 +25,8 @@ public class CartUseCaseImpl implements CartUseCase {
         cartRepository.changeCount(cartId, itemId, action);
     }
 
-    private long GetOrCreateCartId(Long cartId) {
+
+    public long GetOrCreateCartId(Long cartId) {
         if (cartId == null) {
             return cartRepository.createEmptyCart();
         }

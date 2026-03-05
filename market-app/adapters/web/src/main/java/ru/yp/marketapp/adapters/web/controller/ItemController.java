@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.yp.marketapp.adapters.web.controller.base.CookieController;
 import ru.yp.marketapp.adapters.web.service.base.CartUseCase;
 import ru.yp.marketapp.adapters.web.service.base.CatalogQuery;
 import ru.yp.marketapp.adapters.web.view.ItemView;
@@ -15,7 +16,7 @@ import ru.yp.marketapp.appplication.model.CartActionEnum;
 
 @Controller
 @RequestMapping("/items")
-public class ItemController {
+public class ItemController implements CookieController {
 
     private static final String CART_COOKIE = "cartId";
 
@@ -60,20 +61,20 @@ public class ItemController {
         return "redirect:/items/" + id;
     }
 
-    private void setCartCookie(HttpServletResponse response, long cartId, Long cartIdCookieId) {
-
-        if(cartIdCookieId!=null&&cartIdCookieId==cartId){
-            return;
-        }
-
-
-
-        var cookie = new Cookie(CART_COOKIE, Long.toString(cartId));
-
-        cookie.setMaxAge(3600 * 30);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-    }
+//    private void setCartCookie(HttpServletResponse response, long cartId, Long cartIdCookieId) {
+//
+//        if(cartIdCookieId!=null&&cartIdCookieId==cartId){
+//            return;
+//        }
+//
+//
+//
+//        var cookie = new Cookie(CART_COOKIE, Long.toString(cartId));
+//
+//        cookie.setMaxAge(3600 * 30);
+//        cookie.setHttpOnly(true);
+//        cookie.setPath("/");
+//        cookie.setHttpOnly(true);
+//        response.addCookie(cookie);
+//    }
 }

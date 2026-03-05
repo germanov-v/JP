@@ -1,7 +1,7 @@
 package ru.yp.marketapp.adapters.web.view;
 
-import order.Order;
-import order.OrderItem;
+import ru.yp.marketapp.domain.order.Order;
+import ru.yp.marketapp.domain.order.OrderItem;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -1,6 +1,6 @@
 package ru.yp.marketapp.appplication.repositories;
 
-import product.Product;
+import ru.yp.marketapp.domain.product.Product;
 import ru.yp.marketapp.appplication.model.SortEnum;
 import ru.yp.marketapp.appplication.result.PageResult;
 import ru.yp.marketapp.appplication.result.ProductCountResult;
@@ -20,4 +20,6 @@ public interface ProductRepository {
                                                   Optional<Long> cartId);
 
     Optional<ProductCountResult> findItemById(long id,Long  cartId);
+
+
 }

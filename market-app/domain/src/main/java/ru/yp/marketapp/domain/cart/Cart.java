@@ -1,7 +1,7 @@
-package cart;
+package ru.yp.marketapp.domain.cart;
 
-import base.AggregateRoot;
-import product.Product;
+import ru.yp.marketapp.domain.base.AggregateRoot;
+import ru.yp.marketapp.domain.product.Product;
 
 import java.time.OffsetDateTime;
 import java.util.List;

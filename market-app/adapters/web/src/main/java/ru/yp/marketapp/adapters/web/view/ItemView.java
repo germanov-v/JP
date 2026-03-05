@@ -1,6 +1,6 @@
 package ru.yp.marketapp.adapters.web.view;
 
-import product.Product;
+import ru.yp.marketapp.domain.product.Product;
 
 import java.math.BigDecimal;
 

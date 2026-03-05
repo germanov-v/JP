@@ -1,6 +1,6 @@
 package ru.yp.marketapp.appplication.result;
 
-import product.Product;
+import ru.yp.marketapp.domain.product.Product;
 
 public record ProductCountResult(Product product, Integer count) {
 }

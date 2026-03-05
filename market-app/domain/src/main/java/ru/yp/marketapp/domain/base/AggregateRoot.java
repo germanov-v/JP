@@ -1,4 +1,4 @@
-package base;
+package ru.yp.marketapp.domain.base;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;

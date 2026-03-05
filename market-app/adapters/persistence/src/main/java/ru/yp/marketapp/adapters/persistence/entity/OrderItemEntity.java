@@ -2,9 +2,9 @@ package ru.yp.marketapp.adapters.persistence.entity;
 
 
 import jakarta.persistence.*;
-import order.OrderItem;
+import ru.yp.marketapp.domain.order.OrderItem;
 import org.hibernate.annotations.UuidGenerator;
-import product.Product;
+import ru.yp.marketapp.domain.product.Product;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;

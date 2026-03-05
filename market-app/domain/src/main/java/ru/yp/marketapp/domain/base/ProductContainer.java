@@ -1,6 +1,6 @@
-package base;
+package ru.yp.marketapp.domain.base;
 
-import product.Product;
+import ru.yp.marketapp.domain.product.Product;
 
 public abstract class  ProductContainer  extends AggregateRoot {
 

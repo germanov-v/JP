@@ -5,7 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
-import product.Product;
+import ru.yp.marketapp.domain.product.Product;
 import ru.yp.marketapp.adapters.persistence.entity.CartEntity;
 import ru.yp.marketapp.adapters.persistence.entity.ProductEntity;
 import ru.yp.marketapp.adapters.persistence.jpa.repo.CartItemJpaRepository;

@@ -1,6 +1,6 @@
-package order;
+package ru.yp.marketapp.domain.order;
 
-import base.AggregateRoot;
+import ru.yp.marketapp.domain.base.AggregateRoot;
 
 import java.util.List;
 

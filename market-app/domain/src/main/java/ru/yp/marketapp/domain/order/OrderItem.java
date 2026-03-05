@@ -1,7 +1,7 @@
-package order;
+package ru.yp.marketapp.domain.order;
 
-import base.AggregateRoot;
-import base.ProductContainer;
+import ru.yp.marketapp.domain.base.AggregateRoot;
+import ru.yp.marketapp.domain.base.ProductContainer;
 
 public class OrderItem extends ProductContainer {
 

@@ -30,6 +30,13 @@ public class CartRepositoryAdapter implements CartRepository {
     }
 
     @Override
+    public boolean existsById(long cartId) {
+        return cartJpaRepository.existsById(cartId);
+    }
+
+
+
+    @Override
     @Transactional
     public void changeCount(long cartId, long productId, CartActionEnum action) {
         var   cartEntity =  getCartById(cartId).orElseThrow();
@@ -64,7 +71,25 @@ public class CartRepositoryAdapter implements CartRepository {
         }
     }
 
-    public CartEntity createEmptyCart(long cartId) {
+    @Override
+    public long getOrCreateCartId() {
+        return 0;
+    }
+
+    @Override
+    public int getQuantity(long cartId, long productId) {
+        return cartItemJpaRepository.findByCartAndProduct(cartId, productId)
+                //.orElseThrow().getQuantity();
+                .map(CartItemEntity::getQuantity)
+                .orElse(0);
+    }
+
+    public long createEmptyCart() {
+        var entity = new CartEntity();
+        return createEmptyCartGetEntity().getId();
+    }
+
+    public CartEntity createEmptyCartGetEntity() {
         var entity = new CartEntity();
         return cartJpaRepository.save(entity);
     }
@@ -72,4 +97,8 @@ public class CartRepositoryAdapter implements CartRepository {
     public Optional<CartEntity> getCartById(long cartId) {
         return cartJpaRepository.findById(cartId);
     }
+
+
+
+
 }

@@ -43,17 +43,17 @@ public class ItemsController   implements CookieController {
         var cartId = cart.GetOrCreateCartId(cartIdCookie);
         setCartCookie(response, cartId, cartIdCookie);
 
-        var page = catalog.findItems(search, sort, pageNumber, pageSize);
+        var page = catalog.findItems(search, sort, pageNumber, pageSize, cartId);
 
 
-        // TODO: remove N+1
-        var enriched = page.items().stream()
-                .map(i -> new ItemView(i.id(), i.title(), i.description(), i.imgPath(), i.price(),
-                        cart.getCount(cartId,i.id())))
-                .toList();
+//        // TODO: remove N+1
+//        var enriched = page.items().stream()
+//                .map(i -> new ItemView(i.id(), i.title(), i.description(), i.imgPath(), i.price(),
+//                        cart.getCount(cartId,i.id())))
+//                .toList();
 
         //  ЛистЛистАйтимВью
-        model.addAttribute("items", toRows(enriched, 3));
+        model.addAttribute("items", toRows(page.items(), 3));
         model.addAttribute("search", search);
         model.addAttribute("sort", sort);
         model.addAttribute("paging", new PagingView(page.pageNumber(), page.pageSize(), page.hasPrev(), page.hasNext()));

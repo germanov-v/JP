@@ -7,6 +7,7 @@ import ru.yp.marketapp.adapters.web.view.ItemView;
 import java.util.Optional;
 
 public interface CatalogQuery {
-    PageResult<ItemView> findItems(String search, SortEnum sort, int pageNumber, int pageSize);
+    PageResult<ItemView> findItems(String search, SortEnum sort, int pageNumber, int pageSize
+    , long cartId);
     Optional<ItemView> findItem(long id);
 }

@@ -60,3 +60,9 @@ rm -rf ~/.gradle/wrapper/dists
 ```
 ./gradlew :adapters:persistence:dependencies --configuration testCompileClasspath | grep junit
 ```
+
+Тестирование:
+```
+./gradlew :adapters:persistence:test
+./gradlew :adapters:web:test 
+```

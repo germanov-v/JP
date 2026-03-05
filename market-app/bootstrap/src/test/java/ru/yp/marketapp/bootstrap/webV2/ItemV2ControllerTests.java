@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
+//  ./gradlew :bootstrap:test --tests "*ItemV2*" --info
 @Testcontainers
 @SpringBootTest(classes = {BootstrapApplication.class, ItemV2ControllerTests.TestConfig.class})
 //@DataJpaTest // ЭТО ПЛОХОЙ ВАРИАНТ С SpringBootTest]р

@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-init
+      author: market-app
+      changes:
+        - sqlFile:
+            path: db/changelog/001_init.sql
+            relativeToChangelogFile: false
+            splitStatements: true
+            stripComments: true
+            endDelimiter: ;
+
+#  - changeSet:
+#      id: 002-align-schema
+#      author: market-app
+#      changes:
+#        - sqlFile:
+#            path: db/changelog/002_align_schema.sql
+#            relativeToChangelogFile: false
+#            splitStatements: false
+#            stripComments: true
+#            endDelimiter: ;
+#  idea generator
+#  - include:
+#      file: ru/yp/marketapp/adatapters/persistence/entity/03-01-changelog.sql

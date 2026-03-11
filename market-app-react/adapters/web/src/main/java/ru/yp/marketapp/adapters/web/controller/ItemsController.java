@@ -1,11 +1,11 @@
 package ru.yp.marketapp.adapters.web.controller;
 
 
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import reactor.core.publisher.Mono;
 import ru.yp.marketapp.adapters.web.controller.base.CookieController;
 import ru.yp.marketapp.adapters.web.service.base.CartUseCase;
 import ru.yp.marketapp.adapters.web.service.base.CatalogQuery;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/items")
-public class ItemsController   implements CookieController {
+public class ItemsController implements CookieController {
 
     private final CatalogQuery catalog;
     private final CartUseCase cart;
@@ -30,61 +30,54 @@ public class ItemsController   implements CookieController {
     }
 
     @GetMapping
-    public String items(
+    public Mono<String> items(
             @RequestParam(name = "search", required = false, defaultValue = "") String search,
             @RequestParam(name = "sort", required = false, defaultValue = "NO") SortEnum sort,
             @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
             @RequestParam(name = "pageNumber", required = false, defaultValue = "1") int pageNumber,
             @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
-            HttpServletResponse response,
+            ServerHttpResponse response,
             Model model
     ) {
+        return cart.getOrCreateCartId(cartIdCookie)
+                .flatMap(cartId -> {
+                    setCartCookie(response, cartId, cartIdCookie);
 
-        var cartId = cart.GetOrCreateCartId(cartIdCookie);
-        setCartCookie(response, cartId, cartIdCookie);
-
-        var page = catalog.findItems(search, sort, pageNumber, pageSize, cartId);
-
-
-//        // TODO: remove N+1
-//        var enriched = page.items().stream()
-//                .map(i -> new ItemView(i.id(), i.title(), i.description(), i.imgPath(), i.price(),
-//                        cart.getCount(cartId,i.id())))
-//                .toList();
-
-        //  ЛистЛистАйтимВью
-        model.addAttribute("items", toRows(page.items(), 3));
-        model.addAttribute("search", search);
-        model.addAttribute("sort", sort);
-        model.addAttribute("paging", new PagingView(page.pageNumber(), page.pageSize(), page.hasPrev(), page.hasNext()));
-        return "items";
+                    return catalog.findItems(search, sort, pageNumber, pageSize, cartId)
+                            .map(page -> {
+                                model.addAttribute("items", toRows(page.items(), 3));
+                                model.addAttribute("search", search);
+                                model.addAttribute("sort", sort);
+                                model.addAttribute("paging",
+                                        new PagingView(page.pageNumber(), page.pageSize(), page.hasPrev(), page.hasNext()));
+                                return "items";
+                            });
+                });
     }
 
     @PostMapping
-    public String changeFromList(
+    public Mono<String> changeFromList(
             @RequestParam(name = "id") long id,
             @RequestParam(name = "action") CartActionEnum action,
-
-
-            @RequestParam(name="search", required = false, defaultValue = "") String search,
-            @RequestParam(name="sort",required = false, defaultValue = "NO") SortEnum sort,
-            @RequestParam(name="pageSize",required = false, defaultValue = "10") int pageSize,
-            @RequestParam(name="pageNumber",required = false, defaultValue = "1") int pageNumber,
+            @RequestParam(name = "search", required = false, defaultValue = "") String search,
+            @RequestParam(name = "sort", required = false, defaultValue = "NO") SortEnum sort,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
+            @RequestParam(name = "pageNumber", required = false, defaultValue = "1") int pageNumber,
             @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
-            HttpServletResponse response,
-            RedirectAttributes ra
+            ServerHttpResponse response
     ) {
-        var cartId = cart.GetOrCreateCartId(cartIdCookie);
-        setCartCookie(response, cartId, cartIdCookie);
-        cart.changeCount(cartId,id, action);
-
-        ra.addAttribute("search", search);
-        ra.addAttribute("sort", sort);
-        ra.addAttribute("pageSize", pageSize);
-        ra.addAttribute("pageNumber", pageNumber);
-        return "redirect:/items";
+        return cart.getOrCreateCartId(cartIdCookie)
+                .flatMap(cartId -> {
+                    setCartCookie(response, cartId, cartIdCookie);
+                    return cart.changeCount(cartId, id, action)
+                            .thenReturn("redirect:/items?search=" + search
+                                    + "&sort=" + sort
+                                    + "&pageSize=" + pageSize
+                                    + "&pageNumber=" + pageNumber);
+                });
     }
 
+    // TODO: пересмотреть, но вроде тут реактивщины и не нужно
     private static List<List<ItemView>> toRows(List<ItemView> items, int columns) {
         var rows = new ArrayList<List<ItemView>>();
         for (int i = 0; i < items.size(); i += columns) {
@@ -95,7 +88,6 @@ public class ItemsController   implements CookieController {
             }
             rows.add(row);
         }
-
         return rows;
     }
 }

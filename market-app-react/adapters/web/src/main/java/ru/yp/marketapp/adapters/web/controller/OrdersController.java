@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import reactor.core.publisher.Mono;
 import ru.yp.marketapp.adapters.web.service.base.OrdersQuery;
-import ru.yp.marketapp.adapters.web.view.OrderView;
 
 @Controller
 @RequestMapping("/orders")
@@ -23,23 +23,27 @@ public class OrdersController {
     }
 
     @GetMapping
-    public String orders(Model model) {
-        model.addAttribute("orders", orders.findAll());
-        return "orders";
+    public Mono<String> orders(Model model) {
+        return orders.findAll()
+                .collectList()
+                .map(orderViews -> {
+                    model.addAttribute("orders", orderViews);
+                    return "orders";
+                });
     }
 
     @GetMapping("/{id}")
-    public String order(@PathVariable long id,
-                        @RequestParam(required = false, defaultValue = "false") boolean newOrder,
-                        Model model) {
-        OrderView order = orders.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        model.addAttribute("order", order);
-        model.addAttribute("newOrder", newOrder);
-        return "order";
+    public Mono<String> order(@PathVariable long id,
+                              @RequestParam(required = false, defaultValue = "false") boolean newOrder,
+                              Model model) {
+        return orders.findById(id)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))
+                .map(order -> {
+                    model.addAttribute("order", order);
+                    model.addAttribute("newOrder", newOrder);
+                    return "order";
+                });
     }
-
 
     public String redirectToNewOrder(long orderId, RedirectAttributes ra) {
         ra.addAttribute("newOrder", true);

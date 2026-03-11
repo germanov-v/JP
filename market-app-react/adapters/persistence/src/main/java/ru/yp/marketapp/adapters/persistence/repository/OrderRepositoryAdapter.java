@@ -9,6 +9,9 @@ import ru.yp.marketapp.domain.order.Order;
 
 @Repository
 public class OrderRepositoryAdapter implements OrderRepository {
+
+    // TODO: using DatabaseClient
+
     @Override
     public Flux<Order> findAll() {
         return null;

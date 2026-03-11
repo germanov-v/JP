@@ -94,7 +94,10 @@ public class CartReactiveRepositoryTest {
                 });
 
         StepVerifier.create(scenario)
-                .expectNextMatches(total -> total >= 3)
+                .expectNextMatches(
+                        total ->{
+                           return  total >= 3;
+                        } )
                 .verifyComplete();
     }
 }

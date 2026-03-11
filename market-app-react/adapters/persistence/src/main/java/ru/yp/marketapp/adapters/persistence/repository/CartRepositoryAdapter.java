@@ -72,7 +72,10 @@ public class CartRepositoryAdapter implements CartRepository {
             insert into market.cart default values
             RETURNING id
             """)
-                .map((row, meta) -> row.get("id", Long.class))
+                .map((row, meta) -> {
+                    var id = row.get("id", Long.class);
+                    return id;
+                })
                 .one();
     }
 

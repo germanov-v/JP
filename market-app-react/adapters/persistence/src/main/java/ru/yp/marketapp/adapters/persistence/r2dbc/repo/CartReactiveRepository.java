@@ -1,6 +1,7 @@
 package ru.yp.marketapp.adapters.persistence.r2dbc.repo;
 
 import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,7 +18,7 @@ public interface CartReactiveRepository extends ReactiveCrudRepository<CartEntit
         order by id desc
         limit :limit offset :offset
         """)
-    Flux<Long> findPageIds(int offset, int limit);
+    Flux<Long> findPageIds(@Param("offset") int offset, @Param("limit") int limit);
 
     @Query("""
         select count(*)

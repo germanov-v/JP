@@ -23,4 +23,8 @@ mvn dependency:tree
 
 4 Тесты
 
+Через консоль:
 mvn -pl adapters/persistence test
+
+Через IDE дебаг - чтобы тесты запускались в том jvm что и ide дебажит
+mvn -pl adapters/persistence test -DforkCount=0

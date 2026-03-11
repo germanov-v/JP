@@ -19,3 +19,8 @@ mvn clean
 mvn install
 mvn dependency:tree
 ```
+
+
+4 Тесты
+
+mvn -pl adapters/persistence test

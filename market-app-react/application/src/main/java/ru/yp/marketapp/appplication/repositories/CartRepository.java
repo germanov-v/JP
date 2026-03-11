@@ -14,4 +14,8 @@ public interface CartRepository {
 
     Mono<Integer> getQuantity(long cartId, long productId);
 
+    Mono<Void> deleteAllCartItems();
+
+    Mono<Void> deleteAllCarts();
+
 }

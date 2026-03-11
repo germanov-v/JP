@@ -4,10 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -15,15 +13,18 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import ru.yp.marketapp.adapters.PersistenceTestApplication;
 import ru.yp.marketapp.adapters.persistence.r2dbc.repo.CartReactiveRepository;
-import ru.yp.marketapp.adapters.persistence.repository.CartRepositoryAdapter;
 import ru.yp.marketapp.appplication.repositories.CartRepository;
 
-@SpringBootTest
+
+
+@SpringBootTest(classes = PersistenceTestApplication.class)
 @Testcontainers
 @ActiveProfiles("test")
-@ComponentScan(basePackages = "ru.yp.marketapp.adapters.persistence")
-@ContextConfiguration(classes = CartReactiveRepositoryTest.TestConfig.class)
+//@ActiveProfiles("test")
+//@ComponentScan(basePackages = "ru.yp.marketapp.adapters.persistence")
+//@ContextConfiguration(classes = CartReactiveRepositoryTest.TestConfig.class)
 public class CartReactiveRepositoryTest {
 
 

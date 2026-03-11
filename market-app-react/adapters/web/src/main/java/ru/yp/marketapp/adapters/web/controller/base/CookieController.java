@@ -1,7 +1,6 @@
 package ru.yp.marketapp.adapters.web.controller.base;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 

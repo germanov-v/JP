@@ -21,7 +21,8 @@ public class CatalogQueryImpl implements CatalogQuery {
 
     @Override
     public Mono<PageResult<ItemView>> findItems(String search, SortEnum sort, int pageNumber, int pageSize, long cartId) {
-        return productRepository.findItemsCount(search, sort, pageNumber, pageSize, java.util.Optional.of(cartId))
+        return productRepository.findItemsCount(search, sort, pageNumber, pageSize,
+                        cartId)
                 .map(page -> {
                     var items = page.items().stream()
                             .map(item -> ItemView.fromDomainCount(item.product(), item.count()))

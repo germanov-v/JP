@@ -20,20 +20,25 @@ public abstract class PostgresConfig {
                     .withUsername("postgres")
                     .withPassword("postgres");
 
-
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgresContainer::getUsername);
-        registry.add("spring.datasource.password", postgresContainer::getPassword);
+        registry.add("spring.r2dbc.url", () ->
+                "r2dbc:postgresql://%s:%d/%s".formatted(
+                        postgresContainer.getHost(),
+                        postgresContainer.getMappedPort(5432),
+                        postgresContainer.getDatabaseName()
+                )
+        );
+        registry.add("spring.r2dbc.username", postgresContainer::getUsername);
+        registry.add("spring.r2dbc.password", postgresContainer::getPassword);
 
-        //    registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
-        registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
+        registry.add("spring.liquibase.url", postgresContainer::getJdbcUrl);
+        registry.add("spring.liquibase.user", postgresContainer::getUsername);
+        registry.add("spring.liquibase.password", postgresContainer::getPassword);
     }
 
     @Configuration
     public static class TestConfig {
 
     }
-
 }

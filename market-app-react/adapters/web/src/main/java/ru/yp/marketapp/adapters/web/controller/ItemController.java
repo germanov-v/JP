@@ -27,7 +27,7 @@ public class ItemController implements CookieController {
     }
 
     @GetMapping("/{id}")
-    public Mono<String> item(@PathVariable Long id,
+    public Mono<String> item(@PathVariable(name = "id") Long id,
                              @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
                              ServerHttpResponse response,
                              Model model) {
@@ -45,7 +45,7 @@ public class ItemController implements CookieController {
     }
 
     @PostMapping("/{id}")
-    public Mono<String> changeFromCard(@PathVariable long id,
+    public Mono<String> changeFromCard(@PathVariable(name = "id") long id,
                                        @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
                                        ServerHttpResponse response,
                                        @RequestParam(name = "action") CartActionEnum action) {

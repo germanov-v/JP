@@ -45,8 +45,8 @@ public class OrdersController {
                 });
     }
 
-    public String redirectToNewOrder(long orderId, RedirectAttributes ra) {
-        ra.addAttribute("newOrder", true);
-        return "redirect:/orders/" + orderId;
+    // https://stackoverflow.com/questions/57853619/redirection-inside-reactive-spring-webflux-rest-controller
+    public Mono<String> redirectToNewOrder(long orderId) {
+        return Mono.just("redirect:/orders/" + orderId + "?newOrder=true");
     }
 }

@@ -102,17 +102,17 @@ public class ProductRepositoryAdapter implements ProductRepository {
 
         Mono<java.util.List<ProductCountResult>> itemsMono =
                 databaseClient.sql("""
-                        select p.id, p.guid_id, p.title, p.description, p.price,
-                               coalesce(ci.quantity, 0) as quantity
-                        from market.product p
-                        left join market.cart_item ci
-                          on ci.product_id = p.id
-                         and (:cartId is not null and ci.cart_id = :cartId)
-                        where (:q = '' or lower(p.title) like lower('%' || :q || '%')
-                                       or lower(p.description) like lower('%' || :q || '%'))
-                        order by """ + orderBy + """
-                        limit :limit offset :offset
-                        """)
+        select p.id, p.guid_id, p.title, p.description, p.price,
+               coalesce(ci.quantity, 0) as quantity
+        from market.product p
+        left join market.cart_item ci
+          on ci.product_id = p.id
+         and ci.cart_id = :cartId
+        where (:q = '' or lower(p.title) like lower('%' || :q || '%')
+                       or lower(p.description) like lower('%' || :q || '%'))
+        order by %s
+        limit :limit offset :offset
+        """.formatted(orderBy))
                         .bind("q", q)
                         .bind("cartId", cartId==null?"null":cartId)
                         .bind("limit", pageSize)

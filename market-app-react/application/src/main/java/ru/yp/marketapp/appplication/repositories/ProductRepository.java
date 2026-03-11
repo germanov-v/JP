@@ -1,5 +1,6 @@
 package ru.yp.marketapp.appplication.repositories;
 
+import reactor.core.publisher.Mono;
 import ru.yp.marketapp.appplication.model.SortEnum;
 import ru.yp.marketapp.appplication.result.PageResult;
 import ru.yp.marketapp.appplication.result.ProductCountResult;
@@ -9,17 +10,17 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProductRepository {
-    Optional<Product> findByGuidId(UUID guidId);
+    Mono<Product> findByGuidId(UUID guidId);
 
-    Product save(Product product);
+    Mono<Product> save(Product product);
 
-    Optional<Product> findById(Long id);
+    Mono<Product> findById(Long id);
 
-    PageResult<ProductCountResult> findItemsCount(String search, SortEnum sort, int pageNumber,
+    Mono<PageResult<ProductCountResult>> findItemsCount(String search, SortEnum sort, int pageNumber,
                                                   int pageSize,
-                                                  Optional<Long> cartId);
+                                                  Long cartId);
 
-    Optional<ProductCountResult> findItemById(long id,Long  cartId);
+    Mono<ProductCountResult> findItemById(long id,Long  cartId);
 
 
 }

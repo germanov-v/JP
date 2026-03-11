@@ -1,16 +1,17 @@
 package ru.yp.marketapp.appplication.repositories;
 
+import reactor.core.publisher.Mono;
 import ru.yp.marketapp.appplication.model.CartActionEnum;
 
 public interface CartRepository {
 
-    boolean existsById(long cartId);
-    void changeCount(long cartId, long productId, CartActionEnum action);
+    Mono<Boolean> existsById(long cartId);
+    Mono<Void> changeCount(long cartId, long productId, CartActionEnum action);
 
-    long getOrCreateCartId();
+    Mono<Long> getOrCreateCartId();
 
-    long createEmptyCart();
+    Mono<Long> createEmptyCart();
 
-    int getQuantity(long cartId, long productId);
+    Mono<Integer> getQuantity(long cartId, long productId);
 
 }

@@ -29,9 +29,9 @@ mvn -pl adapters/persistence test
 Через IDE дебаг - чтобы тесты запускались в том jvm что и ide дебажит
 mvn -pl adapters/persistence test -DforkCount=0
 
-
+Конфиг для iDEa:
 -pl bootstrap -am -Dtest=ItemV2ControllerTests,OrdersControllerTests -Dsurefire.failIfNoSpecifiedTests=false test -DforkCount=0
-
+-pl bootstrap -am -Dtest=ItemV2ControllerTests,ProductControllerTests,OrdersControllerTests -Dsurefire.failIfNoSpecifiedTests=false test -DforkCount=0
 
 5. Сбор
 

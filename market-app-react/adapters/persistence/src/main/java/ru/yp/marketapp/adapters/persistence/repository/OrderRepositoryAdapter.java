@@ -7,7 +7,9 @@ import reactor.core.publisher.Mono;
 import ru.yp.marketapp.appplication.repositories.OrderRepository;
 import ru.yp.marketapp.domain.order.Order;
 import ru.yp.marketapp.domain.order.OrderItem;
+import ru.yp.marketapp.domain.product.Product;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -32,7 +34,7 @@ public class OrderRepositoryAdapter implements OrderRepository {
                        p.title as product_title,
                        p.description as product_description,
                        p.price as product_price
-                from market."orders" o
+                from market."order" o
                 left join market.order_item oi on oi.order_id = o.id
                 left join market.product p on p.id = oi.product_id
                 order by o.id, oi.id
@@ -56,7 +58,7 @@ public class OrderRepositoryAdapter implements OrderRepository {
                        p.title as product_title,
                        p.description as product_description,
                        p.price as product_price
-                from market."orders" o
+                from market."order" o
                 left join market.order_item oi on oi.order_id = o.id
                 left join market.product p on p.id = oi.product_id
                 where o.id = :orderId
@@ -80,7 +82,7 @@ public class OrderRepositoryAdapter implements OrderRepository {
 
         Order order = new Order();
         order.setId(((Number) first.get("order_id")).longValue());
-
+        var items = new ArrayList<OrderItem>(rows.size());
         for (Map<String, Object> row : rows) {
             if (row.get("item_id") == null) {
                 continue;
@@ -92,10 +94,17 @@ public class OrderRepositoryAdapter implements OrderRepository {
 
             item.setQuantity(((Number) row.get("item_quantity")).intValue());
 
+            var prodct = new Product();
+            prodct.setId(((Number) row.get("product_id")).longValue());
+            prodct.setPrice(((Number) row.get("product_price")).longValue());
+            prodct.setTitle((String) row.get("product_title"));
+            prodct.setDescription((String) row.get("product_description"));
 
-            order.getItems().add(item);
+            item.setProduct(prodct);
+            items.add(item);
+
         }
-
+        order.setItems(items);
         return order;
     }
 }

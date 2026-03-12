@@ -33,8 +33,8 @@ public class OrdersController {
     }
 
     @GetMapping("/{id}")
-    public Mono<String> order(@PathVariable long id,
-                              @RequestParam(required = false, defaultValue = "false") boolean newOrder,
+    public Mono<String> order(@PathVariable(name="id") long id,
+                              @RequestParam(name="newOrder", required = false, defaultValue = "false") boolean newOrder,
                               Model model) {
         return orders.findById(id)
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)))

@@ -23,10 +23,10 @@ public class ProductRepositoryAdapter implements ProductRepository {
     @Override
     public Mono<Product> findByGuidId(UUID guidId) {
         return databaseClient.sql("""
-                select id, guid_id, title, description, price
-                from market.product
-                where guid_id = :guidId
-                """)
+                        select id, guid_id, title, description, price
+                        from market.product
+                        where guid_id = :guidId
+                        """)
                 .bind("guidId", guidId)
                 .map((row, meta) -> mapProduct(row))
                 .one();
@@ -36,10 +36,10 @@ public class ProductRepositoryAdapter implements ProductRepository {
     public Mono<Product> save(Product product) {
         if (product.getId() == null) {
             return databaseClient.sql("""
-                    insert into market.product(guid_id, title, description, price)
-                    values (:guidId, :title, :description, :price)
-                    returning id, guid_id, title, description, price
-                    """)
+                            insert into market.product(guid_id, title, description, price)
+                            values (:guidId, :title, :description, :price)
+                            returning id, guid_id, title, description, price
+                            """)
                     .bind("guidId", product.getGuidId())
                     .bind("title", product.getTitle())
                     .bind("description", product.getDescription())
@@ -49,13 +49,13 @@ public class ProductRepositoryAdapter implements ProductRepository {
         }
 
         return databaseClient.sql("""
-                update market.product
-                   set title = :title,
-                       description = :description,
-                       price = :price
-                 where id = :id
-                returning id, guid_id, title, description, price
-                """)
+                        update market.product
+                           set title = :title,
+                               description = :description,
+                               price = :price
+                         where id = :id
+                        returning id, guid_id, title, description, price
+                        """)
                 .bind("id", product.getId())
                 .bind("title", product.getTitle())
                 .bind("description", product.getDescription())
@@ -67,10 +67,10 @@ public class ProductRepositoryAdapter implements ProductRepository {
     @Override
     public Mono<Product> findById(Long id) {
         return databaseClient.sql("""
-                select id, guid_id, title, description, price
-                from market.product
-                where id = :id
-                """)
+                        select id, guid_id, title, description, price
+                        from market.product
+                        where id = :id
+                        """)
                 .bind("id", id)
                 .map((row, meta) -> mapProduct(row))
                 .one();
@@ -91,30 +91,35 @@ public class ProductRepositoryAdapter implements ProductRepository {
         String q = search == null ? "" : search.trim();
 
         Mono<Long> totalMono = databaseClient.sql("""
-                select count(*)
-                from market.product
-                where (:q = '' or lower(title) like lower('%' || :q || '%')
-                               or lower(description) like lower('%' || :q || '%'))
-                """)
+                        select count(*)
+                        from market.product
+                        where (:q = '' or lower(title) like lower('%' || :q || '%')
+                                       or lower(description) like lower('%' || :q || '%'))
+                        """)
                 .bind("q", q)
                 .map((row, meta) -> ((Number) row.get(0)).longValue())
                 .one();
+        String sql = "";
+
+        // language=sql
+             sql = """
+                    select p.id, p.guid_id, p.title, p.description, p.price,
+                           coalesce(ci.quantity, 0) as quantity
+                    from market.product p
+                    left join market.cart_item ci
+                      on ci.product_id = p.id
+                     and ci.cart_id = :cartId
+                    where (:q = '' or lower(p.title) like lower('%%' || :q || '%%')
+                                   or lower(p.description) like lower('%%' || :q || '%%'))
+                    order by %s
+                    limit :limit offset :offset
+                    """
+                    .formatted(orderBy);
 
         Mono<java.util.List<ProductCountResult>> itemsMono =
-                databaseClient.sql("""
-        select p.id, p.guid_id, p.title, p.description, p.price,
-               coalesce(ci.quantity, 0) as quantity
-        from market.product p
-        left join market.cart_item ci
-          on ci.product_id = p.id
-         and ci.cart_id = :cartId
-        where (:q = '' or lower(p.title) like lower('%' || :q || '%')
-                       or lower(p.description) like lower('%' || :q || '%'))
-        order by %s
-        limit :limit offset :offset
-        """.formatted(orderBy))
+                databaseClient.sql(sql)
                         .bind("q", q)
-                        .bind("cartId", cartId==null?"null":cartId)
+                        .bind("cartId", cartId == null ? "null" : cartId)
                         .bind("limit", pageSize)
                         .bind("offset", offset)
                         .map((row, meta) -> new ProductCountResult(
@@ -144,18 +149,18 @@ public class ProductRepositoryAdapter implements ProductRepository {
     @Override
     public Mono<ProductCountResult> findItemById(long id, Long cartId) {
         String sql = """
-            select p.id,
-                   p.guid_id,
-                   p.title,
-                   p.description,
-                   p.price,
-                   coalesce(ci.quantity, 0) as quantity
-            from market.product p
-            left join market.cart_item ci
-                   on ci.product_id = p.id
-                  and ci.cart_id = :cartId
-            where p.id = :id
-            """;
+                select p.id,
+                       p.guid_id,
+                       p.title,
+                       p.description,
+                       p.price,
+                       coalesce(ci.quantity, 0) as quantity
+                from market.product p
+                left join market.cart_item ci
+                       on ci.product_id = p.id
+                      and ci.cart_id = :cartId
+                where p.id = :id
+                """;
 
         var executeSpec = databaseClient.sql(sql)
                 .bind("id", id);

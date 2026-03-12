@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import ru.yp.marketapp.adapters.web.controller.base.CookieController;
 import ru.yp.marketapp.adapters.web.service.base.CartUseCase;
@@ -48,12 +49,49 @@ public class ItemController implements CookieController {
     public Mono<String> changeFromCard(@PathVariable(name = "id") long id,
                                        @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
                                        ServerHttpResponse response,
-                                       @RequestParam(name = "action") CartActionEnum action) {
-        return cart.getOrCreateCartId(cartIdCookie)
-                .flatMap(cartId -> {
-                    setCartCookie(response, cartId, cartIdCookie);
-                    return cart.changeCount(cartId, id, action)
-                            .thenReturn("redirect:/items/" + id);
+                                   //    @RequestParam(name = "action") CartActionEnum action
+
+    ServerWebExchange exchange
+    ) {
+//        var rawAction = formData.getFirst("action");
+//        if (rawAction == null) {
+//            return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing action"));
+//        }
+//
+//        CartActionEnum action;
+//        try {
+//            action = CartActionEnum.valueOf(rawAction);
+//        } catch (IllegalArgumentException ex) {
+//            return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid action"));
+//        }
+
+
+//        return cart.getOrCreateCartId(cartIdCookie)
+//                .flatMap(cartId -> {
+//                    setCartCookie(response, cartId, cartIdCookie);
+//                    return cart.changeCount(cartId, id, action)
+//                            .thenReturn("redirect:/items/" + id);
+//                });
+        return exchange.getFormData()
+                .flatMap(formData -> {
+                    String rawAction = formData.getFirst("action");
+                    if (rawAction == null) {
+                        return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing action"));
+                    }
+
+                    CartActionEnum action;
+                    try {
+                        action = CartActionEnum.valueOf(rawAction);
+                    } catch (IllegalArgumentException ex) {
+                        return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid action"));
+                    }
+
+                    return cart.getOrCreateCartId(cartIdCookie)
+                            .flatMap(cartId -> {
+                                setCartCookie(response, cartId, cartIdCookie);
+                                return cart.changeCount(cartId, id, action)
+                                        .thenReturn("redirect:/items/" + id);
+                            });
                 });
     }
 }

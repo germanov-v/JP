@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 import ru.yp.marketapp.StartApplication;
 import ru.yp.marketapp.adapters.persistence.entity.ProductEntity;
 import ru.yp.marketapp.adapters.persistence.r2dbc.repo.CartItemReactiveRepository;
@@ -63,8 +65,12 @@ public class ItemV2ControllerTests extends PostgresConfig {
 
         webTestClient.post()
                 .uri("/items/{id}", productId)
-                .bodyValue("action=PLUS")
-                .header("Content-Type", "application/x-www-form-urlencoded")
+                // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/MediaType.html
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                // .bodyValue("action=PLUS")
+
+                .body(BodyInserters.fromFormData("action", "PLUS"))
+              //  .header("Content-Type", "application/x-www-form-urlencoded")
                 .exchange()
                 .expectStatus().is3xxRedirection()
                 .expectHeader().valueEquals("Location", "/items/" + productId)
@@ -102,11 +108,13 @@ public class ItemV2ControllerTests extends PostgresConfig {
     void postItemsPlusCreateCartRedirect() {
         long productId = seedProduct();
 
+        var url = """
+                        id=%d&action=PLUS&search=abc&sort=NO&pageSize=10&pageNumber=2
+                        """.formatted(productId).replace("\n", "");
+
         String cartId = webTestClient.post()
                 .uri("/items")
-                .bodyValue("""
-                        id=%d&action=PLUS&search=abc&sort=NO&pageSize=10&pageNumber=2
-                        """.formatted(productId).replace("\n", ""))
+                .bodyValue(url)
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .exchange()
                 .expectStatus().is3xxRedirection()

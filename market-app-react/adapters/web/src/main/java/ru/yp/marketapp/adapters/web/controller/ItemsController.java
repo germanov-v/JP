@@ -1,10 +1,13 @@
 package ru.yp.marketapp.adapters.web.controller;
 
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import ru.yp.marketapp.adapters.web.controller.base.CookieController;
 import ru.yp.marketapp.adapters.web.service.base.CartUseCase;
@@ -55,25 +58,82 @@ public class ItemsController implements CookieController {
                 });
     }
 
+//    @PostMapping
+//    public Mono<String> changeFromList(
+//            @RequestParam(name = "id") long id,
+//            @RequestParam(name = "action") CartActionEnum action,
+//            @RequestParam(name = "search", required = false, defaultValue = "") String search,
+//            @RequestParam(name = "sort", required = false, defaultValue = "NO") SortEnum sort,
+//            @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
+//            @RequestParam(name = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+//            @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
+//            ServerHttpResponse response
+//    ) {
+//        return cart.getOrCreateCartId(cartIdCookie)
+//                .flatMap(cartId -> {
+//                    setCartCookie(response, cartId, cartIdCookie);
+//                    return cart.changeCount(cartId, id, action)
+//                            .thenReturn("redirect:/items?search=" + search
+//                                    + "&sort=" + sort
+//                                    + "&pageSize=" + pageSize
+//                                    + "&pageNumber=" + pageNumber);
+//                });
+//    }
+
     @PostMapping
     public Mono<String> changeFromList(
-            @RequestParam(name = "id") long id,
-            @RequestParam(name = "action") CartActionEnum action,
-            @RequestParam(name = "search", required = false, defaultValue = "") String search,
-            @RequestParam(name = "sort", required = false, defaultValue = "NO") SortEnum sort,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "10") int pageSize,
-            @RequestParam(name = "pageNumber", required = false, defaultValue = "1") int pageNumber,
             @CookieValue(name = CART_COOKIE, required = false) Long cartIdCookie,
-            ServerHttpResponse response
+            ServerHttpResponse response,
+            ServerWebExchange exchange
     ) {
-        return cart.getOrCreateCartId(cartIdCookie)
-                .flatMap(cartId -> {
-                    setCartCookie(response, cartId, cartIdCookie);
-                    return cart.changeCount(cartId, id, action)
-                            .thenReturn("redirect:/items?search=" + search
-                                    + "&sort=" + sort
-                                    + "&pageSize=" + pageSize
-                                    + "&pageNumber=" + pageNumber);
+        // https://habr.com/ru/companies/cft/articles/648821/
+        return exchange.getFormData()
+                .flatMap(formData -> {
+                    String rawId = formData.getFirst("id");
+                    String rawAction = formData.getFirst("action");
+                    String search = formData.getFirst("search");
+                    String rawSort = formData.getFirst("sort");
+                    String rawPageSize = formData.getFirst("pageSize");
+                    String rawPageNumber = formData.getFirst("pageNumber");
+
+                    if (rawId == null || rawAction == null) {
+                        return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing form fields"));
+                    }
+
+                    long id;
+                    CartActionEnum action;
+                    SortEnum sort;
+                    int pageSize;
+                    int pageNumber;
+
+                    try {
+                        id = Long.parseLong(rawId);
+                        action = CartActionEnum.valueOf(rawAction);
+                        sort = rawSort == null ? SortEnum.NO : SortEnum.valueOf(rawSort);
+                        pageSize = rawPageSize == null ? 10 : Integer.parseInt(rawPageSize);
+                        pageNumber = rawPageNumber == null ? 1 : Integer.parseInt(rawPageNumber);
+                    } catch (IllegalArgumentException ex) {
+                        return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid form fields"));
+                    }
+
+                    if (search == null) {
+                        search = "";
+                    }
+
+                    final String finalSearch = search;
+                    final SortEnum finalSort = sort;
+                    final int finalPageSize = pageSize;
+                    final int finalPageNumber = pageNumber;
+
+                    return cart.getOrCreateCartId(cartIdCookie)
+                            .flatMap(cartId -> {
+                                setCartCookie(response, cartId, cartIdCookie);
+                                return cart.changeCount(cartId, id, action)
+                                        .thenReturn("redirect:/items?search=" + finalSearch
+                                                + "&sort=" + finalSort
+                                                + "&pageSize=" + finalPageSize
+                                                + "&pageNumber=" + finalPageNumber);
+                            });
                 });
     }
 

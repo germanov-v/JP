@@ -17,12 +17,10 @@ import ru.yp.marketapp.adapters.persistence.r2dbc.repo.OrderReactiveRepository;
 import ru.yp.marketapp.adapters.persistence.r2dbc.repo.ProductReactiveRepository;
 import ru.yp.marketapp.bootstrap.webV2.PostgresConfig;
 
-import java.util.List;
 import java.util.Objects;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringBootTest(classes = {StartApplication.class, ProductControllerTests.TestConfig.class})

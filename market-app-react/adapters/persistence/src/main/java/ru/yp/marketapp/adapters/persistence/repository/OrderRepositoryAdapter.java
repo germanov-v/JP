@@ -32,7 +32,7 @@ public class OrderRepositoryAdapter implements OrderRepository {
                        p.title as product_title,
                        p.description as product_description,
                        p.price as product_price
-                from market.orders o
+                from market."orders" o
                 left join market.order_item oi on oi.order_id = o.id
                 left join market.product p on p.id = oi.product_id
                 order by o.id, oi.id
@@ -56,7 +56,7 @@ public class OrderRepositoryAdapter implements OrderRepository {
                        p.title as product_title,
                        p.description as product_description,
                        p.price as product_price
-                from market.orders o
+                from market."orders" o
                 left join market.order_item oi on oi.order_id = o.id
                 left join market.product p on p.id = oi.product_id
                 where o.id = :orderId

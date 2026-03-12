@@ -31,3 +31,11 @@ mvn -pl adapters/persistence test -DforkCount=0
 
 
 -pl bootstrap -am -Dtest=ItemV2ControllerTests,OrdersControllerTests -Dsurefire.failIfNoSpecifiedTests=false test -DforkCount=0
+
+
+5. Сбор
+
+mvn -pl bootstrap -am clean install -DskipTests
+
+6. Запуск
+   mvn -f bootstrap/pom.xml spring-boot:run -DskipTests -Dspring-boot.run.profiles=dev

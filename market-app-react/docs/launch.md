@@ -1,4 +1,6 @@
-mvn -pl bootstrap -am spring-boot:run -DskipTests -Dspring-boot.run.profiles=dev
+mvn -f bootstrap/pom.xml spring-boot:run -DskipTests -Dspring-boot.run.profiles=dev  -Dspring-boot.run.arguments="--server.port=8087"
+
+mvn -f bootstrap/pom.xml spring-boot:run -DskipTests -Dspring-boot.run.profiles=dev
 
 mvn -pl bootstrap spring-boot:run -DskipTests
 

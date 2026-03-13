@@ -9,6 +9,7 @@ import ru.yp.marketapp.appplication.result.PageResult;
 import ru.yp.marketapp.appplication.result.ProductCountResult;
 import ru.yp.marketapp.domain.product.Product;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Repository
@@ -102,29 +103,34 @@ public class ProductRepositoryAdapter implements ProductRepository {
         String sql = "";
 
         // language=sql
-             sql = """
-                    select p.id, p.guid_id, p.title, p.description, p.price,
-                           coalesce(ci.quantity, 0) as quantity
-                    from market.product p
-                    left join market.cart_item ci
-                      on ci.product_id = p.id
-                     and ci.cart_id = :cartId
-                    where (:q = '' or lower(p.title) like lower('%%' || :q || '%%')
-                                   or lower(p.description) like lower('%%' || :q || '%%'))
-                    order by %s
-                    limit :limit offset :offset
-                    """
-                    .formatted(orderBy);
+        sql = """
+                select p.id, p.guid_id, p.title, p.description, p.price,
+                       coalesce(ci.quantity, 0) as quantity
+                from market.product p
+                left join market.cart_item ci
+                  on ci.product_id = p.id
+                 and ci.cart_id = :cartId
+                where (:q = '' or lower(p.title) like lower('%%' || :q || '%%')
+                               or lower(p.description) like lower('%%' || :q || '%%'))
+                order by %s
+                limit :limit offset :offset
+                """
+                .formatted(orderBy);
+
+
+        var executeSpec = databaseClient.sql(sql);
+        executeSpec = cartId == null
+                ? executeSpec.bindNull("cartId", Long.class)
+                : executeSpec.bind("cartId", cartId);
 
         Mono<java.util.List<ProductCountResult>> itemsMono =
-                databaseClient.sql(sql)
+                executeSpec
                         .bind("q", q)
-                        .bind("cartId", cartId == null ? "null" : cartId)
                         .bind("limit", pageSize)
                         .bind("offset", offset)
                         .map((row, meta) -> new ProductCountResult(
                                 mapProduct(row),
-                                ((Number) row.get("quantity")).intValue()
+                                ((Number) Objects.requireNonNull(row.get("quantity"))).intValue()
                         ))
                         .all()
                         .collectList();
